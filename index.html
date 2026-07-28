@@ -9,7 +9,7 @@
 
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "PingFang HK", "Microsoft JhengHei", sans-serif;
             background-color: #120b08;
             color: #fef08a;
             user-select: none;
@@ -43,9 +43,7 @@
     <header class="w-full flex justify-between items-center px-2 md:px-4 shrink-0 py-1 md:py-2 z-50 relative">
         <div class="flex items-center gap-2 md:gap-3 shrink-0 flex-1">
             <i class="fa-solid fa-magnifying-glass text-amber-500 text-2xl md:text-4xl drop-shadow-md"></i>
-            <h1 class="text-2xl md:text-4xl font-black tracking-wide text-amber-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">
-                懷舊放大鏡
-            </h1>
+            <h1 class="text-2xl md:text-4xl font-black tracking-wide text-amber-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">懷舊放大鏡</h1>
         </div>
         <div id="header-score" class="hidden text-yellow-400 font-black flex items-center justify-center gap-2 text-xl md:text-3xl drop-shadow-md shrink-0">
             <i class="fa-solid fa-coins"></i> <span class="hidden sm:inline">得分:</span> <span id="score-display" class="text-white">0</span>
@@ -62,7 +60,7 @@
 
     <main class="w-full flex-1 min-h-0 flex flex-col relative mt-1 mb-2 md:mt-1 md:mb-4 bg-stone-900 rounded-[2rem] md:rounded-[3rem] shadow-[0_10px_40px_rgba(0,0,0,0.8)] border-[6px] md:border-[10px] border-amber-900/60 overflow-hidden">
         
-        <!-- SCREEN: MENU -->
+        <!-- SCREEN 1: MENU -->
         <div id="screen-menu" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 md:p-12 sunburst-bg text-center overflow-y-auto">
             <div class="mb-8 md:mb-12 animate-bounce">
                 <h2 class="text-6xl md:text-8xl text-amber-300 title-shadow tracking-wider leading-tight drop-shadow-2xl">懷舊放大鏡</h2>
@@ -87,7 +85,7 @@
             </div>
         </div>
 
-        <!-- SCREEN: GAMEPLAY -->
+        <!-- SCREEN 2: GAMEPLAY -->
         <div id="screen-game" class="absolute inset-0 z-20 hidden flex-col justify-start gap-2 md:gap-4 p-3 md:p-6 bg-stone-900 overflow-hidden">
             <div class="shrink-0 flex items-center bg-amber-950 text-amber-100 px-4 py-2.5 md:px-6 md:py-4 rounded-2xl border-2 md:border-4 border-amber-700/60 shadow-lg mb-1 md:mb-2 gap-3 md:gap-4">
                 <span id="question-number-badge" class="bg-red-600 text-white font-black-shadow px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-base md:text-xl shadow-inner shrink-0">第一題</span>
@@ -98,7 +96,6 @@
             </div>
 
             <div class="flex-1 min-h-0 w-full flex flex-col md:flex-row items-start gap-4 lg:gap-6 overflow-hidden">
-                <!-- Left Canvas -->
                 <div class="w-full md:w-[55%] lg:w-[60%] flex flex-col items-start justify-start h-full min-h-[40vh] md:min-h-0 overflow-hidden">
                     <div class="relative flex-1 w-full rounded-3xl md:rounded-[3rem] border-[6px] md:border-[10px] border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.6)] overflow-hidden bg-stone-950 shrink-0">
                         <canvas id="clue-1" class="absolute inset-0 w-full h-full object-cover touch-none cursor-move"></canvas>
@@ -106,35 +103,31 @@
                     </div>
                 </div>
 
-                <!-- Right Tools -->
                 <div class="w-full md:w-[45%] lg:w-[40%] flex flex-col gap-4 lg:gap-5 overflow-y-auto overflow-x-hidden md:pr-2 pb-4">
                     <div class="w-full flex flex-col gap-2 shrink-0">
                         <div class="text-amber-300 font-bold text-lg md:text-2xl">請選擇正確答案：</div>
                         <div id="options-grid" class="grid grid-cols-2 gap-3 md:gap-4 w-full"></div>
                     </div>
-
                     <div class="w-full flex flex-col gap-2 shrink-0 mt-2">
                         <div class="text-amber-300 font-bold text-lg md:text-2xl">解難小錦囊：</div>
                         <div class="flex gap-2 lg:gap-3 w-full justify-between">
-                            <button onclick="useFiftyFifty()" id="btn-5050" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-indigo-600 text-white font-black border-4 border-indigo-200 shadow-lg text-base md:text-xl active:scale-95 transition-all">50-50 (x<span id="5050-left">3</span>)</button>
-                            <button onclick="useSecondClue()" id="btn-second-clue" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-green-600 text-white font-black border-4 border-green-200 shadow-lg text-base md:text-xl active:scale-95 transition-all">額外線索 (x<span id="second-clue-left">3</span>)</button>
-                            <button onclick="useHint()" id="btn-hint" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-orange-600 text-white font-black border-4 border-orange-200 shadow-lg text-base md:text-xl active:scale-95 transition-all">文字提示 (x<span id="hint-left">3</span>)</button>
+                            <button onclick="useFiftyFifty()" id="btn-5050" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-indigo-600 text-white font-black border-[3px] border-indigo-200 shadow-lg text-[13px] md:text-xl active:scale-95 transition-all">50-50 (x<span id="5050-left">3</span>)</button>
+                            <button onclick="useSecondClue()" id="btn-second-clue" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-green-600 text-white font-black border-[3px] border-green-200 shadow-lg text-[13px] md:text-xl active:scale-95 transition-all">額外線索 (x<span id="second-clue-left">3</span>)</button>
+                            <button onclick="useHint()" id="btn-hint" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-orange-600 text-white font-black border-[3px] border-orange-200 shadow-lg text-[13px] md:text-xl active:scale-95 transition-all">文字提示 (x<span id="hint-left">3</span>)</button>
                         </div>
                     </div>
-
-                    <div id="hint-banner" class="hidden w-full bg-amber-50 text-amber-950 text-sm md:text-2xl font-black px-4 py-3 md:px-6 rounded-2xl border-4 border-amber-200 shadow-lg shrink-0 mt-2 text-center leading-snug">
-                        <span id="hint-text">提示內容...</span>
+                    <div id="hint-banner" class="hidden w-full bg-amber-50 text-amber-950 font-black px-4 py-3 rounded-2xl border-[4px] border-amber-200 shadow-lg shrink-0 mt-2 text-center text-sm md:text-2xl leading-snug">
+                        <span id="hint-text"></span>
                     </div>
-
                     <div id="clues-container" class="flex flex-row justify-start items-end gap-3 lg:gap-4 w-full mt-auto shrink-0 pt-4">
-                        <div class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-4 border-blue-500 shadow-xl overflow-hidden bg-stone-950 shrink-0">
+                        <div class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-[4px] border-blue-500 shadow-xl overflow-hidden bg-stone-950 shrink-0">
                             <div class="absolute top-0 left-0 bg-blue-500 text-white text-[10px] md:text-sm px-3 py-1 rounded-br-xl font-black z-10">💡 輔助線索</div>
                             <canvas id="clue-2" class="w-full h-full object-cover"></canvas>
                         </div>
-                        <div id="clue-3-locked" class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-4 border-stone-600 shadow-xl bg-stone-800 flex flex-col items-center justify-center text-stone-400 shrink-0">
+                        <div id="clue-3-locked" class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-[4px] border-stone-600 bg-stone-800 flex flex-col items-center justify-center text-stone-400 shrink-0">
                             <i class="fa-solid fa-lock text-2xl md:text-4xl mb-2"></i><span class="text-[10px] md:text-sm font-black text-center">解鎖線索</span>
                         </div>
-                        <div id="clue-3-container" class="hidden relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-4 border-green-500 shadow-xl overflow-hidden bg-stone-950 shrink-0">
+                        <div id="clue-3-container" class="hidden relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-[4px] border-green-500 overflow-hidden bg-stone-950 shrink-0">
                             <div class="absolute top-0 left-0 bg-green-500 text-white text-[10px] md:text-sm px-3 py-1 rounded-br-xl font-black z-10">💡 額外線索</div>
                             <canvas id="clue-3" class="w-full h-full object-cover"></canvas>
                         </div>
@@ -143,25 +136,25 @@
             </div>
         </div>
 
-        <!-- SCREEN: REVEAL -->
+        <!-- SCREEN 3: REVEAL -->
         <div id="screen-reveal" class="absolute inset-0 z-20 hidden flex-col items-center justify-between p-6 md:p-12 sunburst-bg text-center overflow-y-auto">
             <div class="w-full flex justify-between items-center mb-4">
                 <span id="reveal-status-tag" class="bg-green-600 text-white font-black-shadow px-8 py-3 rounded-full text-2xl md:text-4xl border-4 border-green-400">答對了！</span>
                 <div id="reveal-points-tag" class="bg-amber-100 text-amber-900 font-black px-6 py-2 rounded-full border-4 border-amber-600 text-xl md:text-3xl">+100 分</div>
             </div>
             <div class="my-auto w-full max-w-3xl bg-amber-50/95 border-8 border-amber-900 rounded-[2.5rem] p-6 md:p-10 shadow-2xl relative flex flex-col items-center">
-                <h2 id="reveal-item-title" class="text-5xl md:text-7xl font-black text-red-700 mb-4 md:mb-6 title-shadow">眼鏡朱古力</h2>
+                <h2 id="reveal-item-title" class="text-5xl md:text-7xl font-black text-red-700 mb-4 md:mb-6 title-shadow"></h2>
                 <div class="w-full aspect-[16/9] max-h-[350px] rounded-3xl border-[6px] border-amber-800 overflow-hidden bg-stone-900 mb-6 relative">
                     <canvas id="reveal-canvas" class="w-full h-full object-contain"></canvas>
                 </div>
-                <p id="reveal-item-desc" class="text-xl md:text-3xl text-amber-950 font-bold bg-amber-200/80 p-5 md:p-6 rounded-2xl border-4 border-amber-400 w-full text-left">懷舊經典眼鏡形包裝朱古力豆...</p>
+                <p id="reveal-item-desc" class="text-xl md:text-3xl text-amber-950 font-bold bg-amber-200/80 p-5 rounded-2xl border-4 border-amber-400 w-full text-left leading-relaxed"></p>
             </div>
-            <button onclick="nextQuestion()" class="retro-btn w-full max-w-lg py-5 md:py-6 mt-4 rounded-3xl text-3xl md:text-4xl flex justify-center gap-4 transition-transform active:scale-95 shadow-2xl">
+            <button onclick="nextQuestion()" class="retro-btn w-full max-w-lg py-5 mt-4 rounded-3xl text-3xl flex justify-center gap-4 transition-transform active:scale-95">
                 下一題 <i class="fa-solid fa-arrow-right"></i>
             </button>
         </div>
 
-        <!-- SCREEN: RESULT -->
+        <!-- SCREEN 4: RESULT -->
         <div id="screen-result" class="absolute inset-0 z-20 hidden flex-col items-center justify-between p-6 md:p-12 sunburst-bg text-center overflow-y-auto">
             <div class="mt-6 md:mt-8">
                 <h2 class="text-5xl md:text-7xl text-amber-300 title-shadow mb-4">遊戲完成！</h2>
@@ -170,12 +163,12 @@
             <div class="w-full max-w-2xl bg-amber-50/95 border-8 border-amber-900 rounded-[3rem] p-8 md:p-12 shadow-2xl text-amber-950 my-auto">
                 <div class="text-center mb-8">
                     <span class="text-xl md:text-3xl font-black text-amber-800">最終總得分</span>
-                    <div id="final-score" class="text-7xl md:text-9xl font-black text-red-600 my-4 drop-shadow-xl">850</div>
+                    <div id="final-score" class="text-7xl md:text-9xl font-black text-red-600 my-4 drop-shadow-xl">0</div>
                 </div>
-                <div class="bg-amber-200/80 p-6 md:p-8 rounded-3xl border-4 border-amber-400 text-center mb-8">
+                <div class="bg-amber-200/80 p-6 rounded-3xl border-4 border-amber-400 text-center mb-8">
                     <div class="text-xl md:text-2xl text-amber-800 font-black mb-2">獲封稱號</div>
-                    <div id="rank-title" class="text-4xl md:text-5xl font-black text-amber-900 mb-4">🏆 懷舊大師</div>
-                    <p id="rank-desc" class="text-lg md:text-2xl font-bold text-amber-800">你對兒時的小食與玩具瞭如指掌！</p>
+                    <div id="rank-title" class="text-4xl md:text-5xl font-black text-amber-900 mb-4"></div>
+                    <p id="rank-desc" class="text-lg md:text-2xl font-bold text-amber-800"></p>
                 </div>
             </div>
             <div class="flex flex-col sm:flex-row gap-4 md:gap-6 w-full max-w-2xl mb-4">
@@ -188,7 +181,7 @@
             </div>
         </div>
 
-        <!-- SCREEN: MUSEUM -->
+        <!-- SCREEN 5: MUSEUM -->
         <div id="screen-museum" class="absolute inset-0 z-20 hidden flex-col p-5 md:p-8 bg-stone-900 text-amber-100 overflow-hidden">
             <div class="flex justify-between items-center border-b-[4px] border-amber-800 pb-4 mb-4 shrink-0">
                 <h2 class="text-3xl md:text-5xl font-black-shadow text-amber-400 flex items-center gap-3"><i class="fa-solid fa-box-archive"></i> 懷舊展覽館</h2>
@@ -226,11 +219,12 @@
             ctx.restore();
         }
 
-        // Image loader simplified: No crossOrigin, local relative paths only
+        // 圖片輔助函數：加入超強防呆錯誤顯示 (Missing File Fallback)
         function drawImageHelper(url) {
             return function(ctx, w, h) {
                 if (typeof drawSunburstBg === 'function') drawSunburstBg(ctx, w, h);
                 const img = new Image();
+                
                 img.onload = () => {
                     if (typeof drawSunburstBg === 'function') drawSunburstBg(ctx, w, h);
                     const scale = Math.min(w / img.width, h / img.height) * 0.9;
@@ -238,13 +232,28 @@
                     const ix = (w - iw) / 2; const iy = (h - ih) / 2;
                     ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 10;
                     ctx.drawImage(img, ix, iy, iw, ih); ctx.shadowColor = 'transparent';
-                    if (gameState.currentScreen === 'game' && interactiveLoupe.offscreen) renderLoupe();
+                    if (gameState && gameState.currentScreen === 'game' && interactiveLoupe.offscreen) renderLoupe();
                 };
+
+                // 當圖片載入失敗時的「防呆」顯示，告訴開發者少了哪一張圖！
+                img.onerror = () => {
+                    if (typeof drawSunburstBg === 'function') drawSunburstBg(ctx, w, h);
+                    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.fillStyle = '#fef08a';
+                    ctx.font = 'bold ' + Math.floor(w/12) + 'px sans-serif';
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText('圖片準備中...', w/2, h/2 - 20);
+                    ctx.font = 'bold ' + Math.floor(w/16) + 'px sans-serif';
+                    ctx.fillStyle = '#fca5a5';
+                    ctx.fillText('缺少: ' + url.split('/').pop(), w/2, h/2 + 20);
+                    if (gameState && gameState.currentScreen === 'game' && interactiveLoupe.offscreen) renderLoupe();
+                };
+
                 img.src = url;
             };
         }
 
-        // All items configured to load via local image links!
         const QUESTIONS_DATABASE = [
             { id: '1', name: '花繩', category: '試猜出一種遊戲', distractors: ['跳飛機', '抓豆袋', '踢繭子'], hint: '用一條棉繩在雙手十指間翻繞出各種圖案。', desc: '翻花繩是經典的雙人或單人手部遊戲！', draw: drawImageHelper('./images/花繩.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🤲', text:'雙人遊戲'}, {emoji:'🏫', text:'小息時間'}] },
             { id: '2', name: '叮叮糖', category: '試猜出一種食物', distractors: ['龍鬚糖', '麥芽糖餅', '白雪糕'], hint: '小販會用小錘子和鑿子敲打硬麥芽糖。', desc: '香港傳統硬麥芽糖，發出「叮叮」響聲！', draw: drawImageHelper('./images/叮叮糖.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🔨', text:'鐵槌與鑿'}, {emoji:'🛒', text:'街邊小販'}] },
@@ -285,15 +294,15 @@
             { id: '37', name: '糖蔥餅', category: '試猜出一種食物', distractors: ['龍鬚糖', '叮叮糖', '糯米糍'], hint: '白色的薄餅皮包著一絲絲像蔥段的白糖。', desc: '將麥芽糖拉扯成佈滿小孔的糖蔥，再用薄餅皮捲起。', draw: drawImageHelper('./images/糖蔥餅.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🌯', text:'薄餅皮捲'}, {emoji:'🧅', text:'酥脆白糖'}] },
             { id: '38', name: '媽咪麵', category: '試猜出一種食物', distractors: ['福字麵', '出前一丁', '營多撈麵'], hint: '黃色包裝，吃之前要捏碎並加入調味粉。', desc: '童年最愛的零食麵！不需要煮，香脆可口。', draw: drawImageHelper('./images/媽咪麵.png'), cluePoint: {x:0.5, y:0.4}, related: [{emoji:'👾', text:'藍色怪獸'}, {emoji:'🧂', text:'味精粉包'}] },
             { id: '39', name: '龍鬚糖', category: '試猜出一種食物', distractors: ['糖蔥餅', '棉花糖', '叮叮糖'], hint: '外表像蠶絲，裡面包著花生碎和芝麻。', desc: '師傅將麥芽糖反覆拉扯成千絲萬縷的糖絲。', draw: drawImageHelper('./images/龍鬚糖.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🧶', text:'千絲萬縷'}, {emoji:'🥜', text:'花生芝麻餡'}] },
-            { id: '40', name: '雙妹嘜花露水', category: '試猜出一種用品', distractors: ['白花油', '驅蚊水', '香水'], hint: '玻璃樽上印著兩個穿著旗袍的女子。', desc: '香港百年本土品牌，經典花露水可用於消暑防蚊。', draw: drawImageHelper('./images/雙妹嘜花露水.png'), cluePoint: {x:0.5, y:0.6}, related: [{emoji:'👯‍♀️', text:'旗袍雙姝'}, {emoji:'🌸', text:'粉紅香水'}] },
-            { id: '41', name: '國旗擦膠', category: '試猜出一種用品', distractors: ['沙膠', '鉛筆刨', '間尺'], hint: '外面包著印有各國國旗的紙套的擦字膠。', desc: '小學生的必備文具兼玩具，會用來玩「彈擦膠」。', draw: drawImageHelper('./images/國旗擦膠.png'), cluePoint: {x:0.5, y:0.4}, related: [{emoji:'🇬🇧', text:'收集各國'}, {emoji:'✏️', text:'彈擦膠遊戲'}] },
+            { id: '40', name: '花露水', category: '試猜出一種用品', distractors: ['白花油', '驅蚊水', '香水'], hint: '一種傳統香水，長輩常用來消暑、驅蚊或去除異味。', desc: '經典的復古玻璃樽裝花露水，香氣獨特。', draw: drawImageHelper('./images/花露水.png'), cluePoint: {x:0.5, y:0.6}, related: [{emoji:'🦟', text:'消暑防蚊'}, {emoji:'🌸', text:'經典香氣'}] },
+            { id: '41', name: '套圈水機', category: '試猜出一種玩具', distractors: ['Game Boy', '彈珠機', '電子寵物'], hint: '透明塑膠機身裝滿水，按按鈕會噴出水流套圈圈。', desc: '利用按鈕控制水流，努力將小圈圈套進針柱裡。', draw: drawImageHelper('./images/套圈水機.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'💧', text:'水壓噴流'}, {emoji:'⭕', text:'彩色圈圈'}] },
             { id: '42', name: '康樂棋', category: '試猜出一種遊戲', distractors: ['波子棋', '桌球', '冰壺'], hint: '用長木桿將圓形的棋子打入四個角落的洞中。', desc: '香港經典康樂設施，玩法類似桌球。', draw: drawImageHelper('./images/康樂棋.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎱', text:'撞擊入洞'}, {emoji:'🏒', text:'長木桿打擊'}] },
             { id: '43', name: '扭計骰', category: '試猜出一種玩具', distractors: ['七巧板', '積木', '迷宮'], hint: '一個正方體的玩具，要轉動它讓每一面變成單一顏色。', desc: '經典益智玩具，考驗空間邏輯與記憶力。', draw: drawImageHelper('./images/扭計骰.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎲', text:'六面顏色'}, {emoji:'🧠', text:'考驗邏輯'}] },
             { id: '44', name: '膠劍仔', category: '試猜出一種玩具', distractors: ['積木', '兵器模型', '牙籤'], hint: '五顏六色、很小把的塑膠劍。', desc: '小學生之間極受歡迎的平價玩具，用手指彈擊。', draw: drawImageHelper('./images/膠劍仔.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🗡️', text:'五顏六色'}, {emoji:'🤏', text:'手指彈擊'}] },
             { id: '45', name: 'Game Boy', category: '試猜出一種玩具', distractors: ['紅白機', '電子寵物', 'PSP'], hint: '螢幕只有綠黑色，最經典遊戲是俄羅斯方塊。', desc: '任天堂推出的經典掌上遊戲機。', draw: drawImageHelper('./images/Game Boy.png'), cluePoint: {x:0.5, y:0.3}, related: [{emoji:'👾', text:'綠黑螢幕'}, {emoji:'🔋', text:'四粒AA電'}] },
             { id: '46', name: '東南西北', category: '試猜出一種遊戲', distractors: ['摺紙飛機', '公仔紙', '塔羅牌'], hint: '套在四隻手指上開合，裡面寫著懲罰或預言。', desc: '經典的課堂小遊戲，打開裡面會看到預言。', draw: drawImageHelper('./images/東南西北.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'📜', text:'摺紙遊戲'}, {emoji:'👉', text:'手指開合'}] },
-            { id: '47', name: '換衫紙公仔', category: '試猜出一種玩具', distractors: ['芭比娃娃', '毛公仔', '黏土'], hint: '印在紙上的女孩圖案，附有很多套衣服可以替換。', desc: '昔日女孩最愛的時裝遊戲，可以隨意搭配漂亮衣服。', draw: drawImageHelper('./images/換衫紙公仔.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'👗', text:'紙製時裝'}, {emoji:'✂️', text:'沿邊剪裁'}] },
-            { id: '48', name: '竹蜻蜓', category: '試猜出一種玩具', distractors: ['陀螺', '風箏', '搖搖'], hint: '一根木棍上面連著螺旋槳，雙手一搓就會飛。', desc: '古老而簡單的飛行玩具，利用雙手搓動木柄產生升力。', draw: drawImageHelper('./images/竹蜻蜓.png'), cluePoint: {x:0.5, y:0.3}, related: [{emoji:'🚁', text:'雙手搓飛'}, {emoji:'🪵', text:'木製螺旋'}] },
+            { id: '47', name: '搖搖', category: '試猜出一種玩具', distractors: ['陀螺', '竹蜻蜓', '扯鈴'], hint: '用一條棉線連著圓盤，可以做出帶狗散步等花式動作。', desc: '經典搖搖玩具，絕招花式風靡全港校園！', draw: drawImageHelper('./images/搖搖.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🪀', text:'帶狗散步'}, {emoji:'🥤', text:'汽水限量版'}] },
+            { id: '48', name: '竹蜻蜓', category: '試猜出一種玩具', distractors: ['陀螺', '風箏', '飛盤'], hint: '一根木棍上面連著螺旋槳，雙手一搓就會飛。', desc: '古老而簡單的飛行玩具，利用雙手搓動產生升力。', draw: drawImageHelper('./images/竹蜻蜓.png'), cluePoint: {x:0.5, y:0.3}, related: [{emoji:'🚁', text:'雙手搓飛'}, {emoji:'🪵', text:'木製螺旋'}] },
             { id: '49', name: '萬花筒', category: '試猜出一種玩具', distractors: ['望遠鏡', '放大鏡', '顯微鏡'], hint: '轉動圓筒，會看到裡面彩色碎片的對稱圖案不斷變化。', desc: '利用鏡子反射原理製成的光學玩具，圖案絢麗無比。', draw: drawImageHelper('./images/萬花筒.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🌌', text:'鏡面反射'}, {emoji:'🔄', text:'旋轉圓筒'}] },
             { id: '50', name: '紅白機手掣', category: '試猜出一種玩具', distractors: ['Game Boy', '遙控器', '錄影帶'], hint: '長方形遊戲手把，有經典的金色面板和紅色A、B按鈕。', desc: '任天堂紅白機的經典控制器。', draw: drawImageHelper('./images/紅白機手掣.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎮', text:'金色面板'}, {emoji:'👆', text:'紅色AB掣'}] }
         ];
@@ -505,8 +514,6 @@
         function endGame() {
             playSound('win');
             document.getElementById('final-score').innerText = gameState.score;
-            document.getElementById('stat-correct').innerText = `${gameState.correctCount}/${gameState.questionsList.length}`;
-            document.getElementById('stat-streak').innerText = `${gameState.maxStreak} 回`;
             let rank = '🌱 懷舊新手', rankDesc = '再接再厲！多去懷舊展覽館看看，重溫美好童年時光！';
             if (gameState.score >= 2000) { rank = '🏆 懷舊宗師'; rankDesc = '神乎其技！你對往昔事物的記憶無人能及！'; }
             else if (gameState.score >= 1000) { rank = '🌟 記憶達人'; rankDesc = '非常厲害！大部分經典童年回憶都難不倒你！'; }
@@ -562,12 +569,17 @@
                 const card = document.createElement('div');
                 card.className = "bg-amber-950/90 border-4 border-amber-800 rounded-3xl p-5 md:p-6 flex flex-col justify-between shadow-xl";
                 
+                // 這裡更新了展覽館排版：標題置中且變大、移除小標籤
                 card.innerHTML = `
-                    <h3 class="font-black text-amber-300 text-3xl md:text-4xl text-center mb-2 tracking-wide w-full drop-shadow-md">${item.name}</h3>
-                    <div class="w-full h-40 md:h-56 bg-black/60 rounded-2xl overflow-hidden mb-4 md:mb-5 mt-2 relative border-[3px] border-amber-900 shadow-inner">
-                        <canvas id="museum-canvas-${item.id}" class="w-full h-full object-contain"></canvas>
+                    <div>
+                        <div class="mb-3">
+                            <h3 class="font-black text-amber-300 text-3xl md:text-4xl text-center w-full">${item.name}</h3>
+                        </div>
+                        <div class="w-full h-40 md:h-56 bg-black/60 rounded-2xl overflow-hidden my-4 md:my-5 relative border-[3px] border-amber-900 shadow-inner">
+                            <canvas id="museum-canvas-${item.id}" class="w-full h-full object-contain"></canvas>
+                        </div>
+                        <p class="text-base md:text-xl text-amber-100 font-bold leading-relaxed">${item.desc}</p>
                     </div>
-                    <p class="text-base md:text-xl text-amber-100 font-bold leading-relaxed">${item.desc}</p>
                 `;
                 
                 grid.appendChild(card);
