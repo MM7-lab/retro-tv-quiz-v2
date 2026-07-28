@@ -4,21 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>懷舊放大鏡 - Nostalgic Trivia Game</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* 專為長者設計：全面使用系統內建最清晰、最易讀的無襯線字體，並加粗 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "PingFang HK", "Microsoft JhengHei", sans-serif;
             background-color: #120b08;
             color: #fef08a;
             user-select: none;
-            touch-action: manipulation;
+            touch-action: manipulation; /* 確保觸控不會意外縮放網頁 */
         }
 
-        .font-black-shadow { font-weight: 900; text-shadow: 2px 2px 0px #78350f, -1px -1px 0px #000; }
-        .title-shadow { font-weight: 900; text-shadow: 4px 4px 0px #78350f, -2px -2px 0px #000; }
+        /* 保留粗體陰影效果 */
+        .font-black-shadow {
+            font-weight: 900;
+            text-shadow: 2px 2px 0px #78350f, -1px -1px 0px #000;
+        }
 
+        .title-shadow {
+            font-weight: 900;
+            text-shadow: 4px 4px 0px #78350f, -2px -2px 0px #000;
+        }
+
+        /* Retro Buttons - 超大點擊範圍設計 */
         .retro-btn {
             background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
             color: #451a03;
@@ -29,9 +41,20 @@
             text-shadow: 0 1px 0 rgba(255,255,255,0.4);
             font-weight: 900;
         }
-        .retro-btn:active { transform: translateY(6px); box-shadow: 0 0px 0 #78350f, 0 2px 4px rgba(0,0,0,0.5); }
 
-        .sunburst-bg { background: repeating-conic-gradient(from 0deg, #78350f 0deg 15deg, #451a03 15deg 30deg); }
+        .retro-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 #78350f, 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Sunburst Background */
+        .sunburst-bg {
+            background: repeating-conic-gradient(
+                from 0deg,
+                #78350f 0deg 15deg,
+                #451a03 15deg 30deg
+            );
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #2e1505; }
@@ -40,31 +63,40 @@
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col justify-start gap-1 md:gap-2 pt-1 pb-4 px-2 sm:px-4 md:pt-2 md:pb-6 md:px-6 lg:px-8 max-w-[1024px] mx-auto box-border bg-[#120b08] font-sans selection:bg-amber-500/30">
 
+    <!-- Header Controls (Tablet First Design) -->
     <header class="w-full flex justify-between items-center px-2 md:px-4 shrink-0 py-1 md:py-2 z-50 relative">
         <div class="flex items-center gap-2 md:gap-3 shrink-0 flex-1">
             <i class="fa-solid fa-magnifying-glass text-amber-500 text-2xl md:text-4xl drop-shadow-md"></i>
-            <h1 class="text-2xl md:text-4xl font-black tracking-wide text-amber-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">懷舊放大鏡</h1>
+            <h1 class="text-2xl md:text-4xl font-black tracking-wide text-amber-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">
+                懷舊放大鏡
+            </h1>
         </div>
+
         <div id="header-score" class="hidden text-yellow-400 font-black flex items-center justify-center gap-2 text-xl md:text-3xl drop-shadow-md shrink-0">
             <i class="fa-solid fa-coins"></i> <span class="hidden sm:inline">得分:</span> <span id="score-display" class="text-white">0</span>
         </div>
-        <div class="flex items-center justify-end shrink-0 flex-1">
+
+        <div class="flex items-center justify-end shrink-0 flex-1 gap-2">
             <button id="btn-museum-top" onclick="showScreen('museum')" class="px-3 py-2 sm:px-4 sm:py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-black text-sm sm:text-xl flex items-center gap-2 shadow-md border-2 border-amber-400 transition-transform active:scale-95">
                 <i class="fa-solid fa-book-open"></i> <span class="hidden sm:inline">懷舊展覽館</span>
             </button>
             <button id="btn-back-menu" onclick="showScreen('menu')" class="hidden px-4 py-2 sm:px-6 sm:py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-black text-base sm:text-xl flex items-center gap-2 shadow-md border-2 border-orange-400 transition-transform active:scale-95">
-                <span class="hidden sm:inline">返回</span><span class="sm:hidden"><i class="fa-solid fa-arrow-left"></i> 返回</span>
+                <span class="hidden sm:inline">返回主頁</span><span class="sm:hidden"><i class="fa-solid fa-house"></i> 主頁</span>
             </button>
         </div>
     </header>
 
+    <!-- Main App Viewport -->
     <main class="w-full flex-1 min-h-0 flex flex-col relative mt-1 mb-2 md:mt-1 md:mb-4 bg-stone-900 rounded-[2rem] md:rounded-[3rem] shadow-[0_10px_40px_rgba(0,0,0,0.8)] border-[6px] md:border-[10px] border-amber-900/60 overflow-hidden">
         
-        <!-- SCREEN 1: MENU -->
+        <!-- SCREEN 1: MENU SCREEN -->
         <div id="screen-menu" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 md:p-12 sunburst-bg text-center overflow-y-auto">
             <div class="mb-8 md:mb-12 animate-bounce">
-                <h2 class="text-6xl md:text-8xl text-amber-300 title-shadow tracking-wider leading-tight drop-shadow-2xl">懷舊放大鏡</h2>
+                <h2 class="text-6xl md:text-8xl text-amber-300 title-shadow tracking-wider leading-tight drop-shadow-2xl">
+                    懷舊放大鏡
+                </h2>
             </div>
+
             <div class="flex items-center justify-center w-full max-w-3xl mb-8 md:mb-12">
                 <div class="bg-amber-100/95 border-4 md:border-8 border-amber-900 rounded-3xl p-6 md:p-8 shadow-2xl w-full text-amber-950 text-left">
                     <div class="flex flex-col gap-4">
@@ -72,135 +104,294 @@
                             <span class="text-5xl md:text-7xl shrink-0 mt-2">🔍</span>
                             <div>
                                 <h3 class="font-black text-3xl md:text-4xl text-red-800 mb-3">懷舊放大鏡玩法！</h3>
-                                <p class="text-xl md:text-2xl font-bold text-amber-900 leading-snug">畫面上的物品會被隱蔽在黑暗中。請 <span class="bg-yellow-400 text-red-800 px-2 py-0.5 rounded-lg shadow-sm border-2 border-red-800/20">拖曳放大鏡</span> 探索局部細節，並根據提示猜出答案！</p>
+                                <p class="text-xl md:text-2xl font-bold text-amber-900 leading-snug">
+                                    畫面上的物品會被隱蔽在黑暗中。請 <span class="bg-yellow-400 text-red-800 px-2 py-0.5 rounded-lg shadow-sm border-2 border-red-800/20">拖曳放大鏡</span> 探索局部細節，並根據提示猜出答案！
+                                </p>
+                            </div>
+                        </div>
+                        <div class="pt-2">
+                            <p class="text-lg md:text-xl font-black text-amber-800 mb-3">如果有需要的話也可以用以下的錦囊：</p>
+                            <div class="grid grid-cols-3 gap-3 md:gap-6 text-center text-lg md:text-2xl font-black text-amber-900">
+                                <div class="bg-indigo-100 text-indigo-900 p-3 md:p-4 rounded-2xl border-2 md:border-4 border-indigo-400 shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-scissors"></i> 50-50</div>
+                                <div class="bg-green-100 text-green-900 p-3 md:p-4 rounded-2xl border-2 md:border-4 border-green-400 shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-image"></i> 額外線索</div>
+                                <div class="bg-yellow-100 text-yellow-900 p-3 md:p-4 rounded-2xl border-2 md:border-4 border-yellow-400 shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-lightbulb"></i> 文字提示</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="w-full max-w-xl">
-                <button onclick="startGame()" class="retro-btn w-full py-5 md:py-6 rounded-3xl text-3xl md:text-4xl flex items-center justify-center gap-4 transition-transform hover:scale-105 active:scale-95">
+                <button onclick="startGame('classic')" class="retro-btn w-full py-5 md:py-6 rounded-3xl text-3xl md:text-4xl flex items-center justify-center gap-4 transition-transform hover:scale-105 active:scale-95">
                     <i class="fa-solid fa-play"></i> 開始遊戲
                 </button>
             </div>
         </div>
 
-        <!-- SCREEN 2: GAMEPLAY -->
+        <!-- SCREEN 2: GAMEPLAY SCREEN -->
         <div id="screen-game" class="absolute inset-0 z-20 hidden flex-col justify-start gap-2 md:gap-4 p-3 md:p-6 bg-stone-900 overflow-hidden">
+            
             <div class="shrink-0 flex items-center bg-amber-950 text-amber-100 px-4 py-2.5 md:px-6 md:py-4 rounded-2xl border-2 md:border-4 border-amber-700/60 shadow-lg mb-1 md:mb-2 gap-3 md:gap-4">
-                <span id="question-number-badge" class="bg-red-600 text-white font-black-shadow px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-base md:text-xl shadow-inner shrink-0">第一題</span>
+                <span id="question-number-badge" class="bg-red-600 text-white font-black-shadow px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-base md:text-xl shadow-inner shrink-0">
+                    第一題
+                </span>
                 <div class="font-black text-sm md:text-2xl flex items-center gap-2 flex-1 min-w-0">
                     <i class="fa-solid fa-magnifying-glass text-amber-400 animate-pulse shrink-0"></i> 
-                    <span class="truncate">請拖曳尋找線索：<span id="category-badge" class="text-amber-300 ml-1">提示</span></span>
+                    <span class="truncate">請拖曳「放大鏡」尋找線索猜測答案：<span id="category-badge" class="text-amber-300 ml-1">提示分類</span></span>
                 </div>
             </div>
 
             <div class="flex-1 min-h-0 w-full flex flex-col md:flex-row items-start gap-4 lg:gap-6 overflow-hidden">
+                
                 <div class="w-full md:w-[55%] lg:w-[60%] flex flex-col items-start justify-start h-full min-h-[40vh] md:min-h-0 overflow-hidden">
                     <div class="relative flex-1 w-full rounded-3xl md:rounded-[3rem] border-[6px] md:border-[10px] border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.6)] overflow-hidden bg-stone-950 shrink-0">
                         <canvas id="clue-1" class="absolute inset-0 w-full h-full object-cover touch-none cursor-move"></canvas>
+                        
+                        <!-- Loading Indicator for Image Preloading -->
+                        <div id="image-loading-indicator" class="hidden absolute inset-0 z-30 bg-stone-900/90 flex flex-col items-center justify-center">
+                            <i class="fa-solid fa-spinner fa-spin text-5xl text-amber-500 mb-4"></i>
+                            <span class="text-amber-300 font-black text-xl">準備圖片中...</span>
+                        </div>
+
                         <div class="absolute inset-0 shadow-[inset_0_0_25px_rgba(0,0,0,0.85)] pointer-events-none z-20"></div>
                     </div>
                 </div>
 
                 <div class="w-full md:w-[45%] lg:w-[40%] flex flex-col gap-4 lg:gap-5 overflow-y-auto overflow-x-hidden md:pr-2 pb-4">
+                    
                     <div class="w-full flex flex-col gap-2 shrink-0">
                         <div class="text-amber-300 font-bold text-lg md:text-2xl">請選擇正確答案：</div>
-                        <div id="options-grid" class="grid grid-cols-2 gap-3 md:gap-4 w-full"></div>
+                        <div id="options-grid" class="grid grid-cols-2 gap-3 md:gap-4 w-full">
+                            <!-- Options dynamically rendered -->
+                        </div>
                     </div>
+
                     <div class="w-full flex flex-col gap-2 shrink-0 mt-2">
                         <div class="text-amber-300 font-bold text-lg md:text-2xl">解難小錦囊：</div>
                         <div class="flex gap-2 lg:gap-3 w-full justify-between">
-                            <button onclick="useFiftyFifty()" id="btn-5050" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-indigo-600 text-white font-black border-[3px] border-indigo-200 shadow-lg text-[13px] md:text-xl active:scale-95 transition-all">50-50 (x<span id="5050-left">3</span>)</button>
-                            <button onclick="useSecondClue()" id="btn-second-clue" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-green-600 text-white font-black border-[3px] border-green-200 shadow-lg text-[13px] md:text-xl active:scale-95 transition-all">額外線索 (x<span id="second-clue-left">3</span>)</button>
-                            <button onclick="useHint()" id="btn-hint" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-orange-600 text-white font-black border-[3px] border-orange-200 shadow-lg text-[13px] md:text-xl active:scale-95 transition-all">文字提示 (x<span id="hint-left">3</span>)</button>
+                            <button onclick="useFiftyFifty()" id="btn-5050" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-indigo-600 hover:bg-indigo-500 text-white font-black border-[3px] md:border-4 border-indigo-200 shadow-lg text-[13px] sm:text-base md:text-xl flex flex-col items-center justify-center transition-all leading-tight active:scale-95">
+                                <span class="mb-0.5">50-50</span>
+                                <span>x<span id="5050-left">3</span></span>
+                            </button>
+                            <button onclick="useSecondClue()" id="btn-second-clue" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-green-600 hover:bg-green-500 text-white font-black border-[3px] md:border-4 border-green-200 shadow-lg text-[13px] sm:text-base md:text-xl flex flex-col items-center justify-center transition-all leading-tight active:scale-95">
+                                <span class="mb-0.5">額外線索</span>
+                                <span>x<span id="second-clue-left">3</span></span>
+                            </button>
+                            <button onclick="useHint()" id="btn-hint" class="flex-1 aspect-[2/1] md:aspect-[3/2] rounded-[2rem] bg-orange-600 hover:bg-orange-500 text-white font-black border-[3px] md:border-4 border-orange-200 shadow-lg text-[13px] sm:text-base md:text-xl flex flex-col items-center justify-center transition-all leading-tight active:scale-95">
+                                <span class="mb-0.5">文字提示</span>
+                                <span>x<span id="hint-left">3</span></span>
+                            </button>
                         </div>
                     </div>
-                    <div id="hint-banner" class="hidden w-full bg-amber-50 text-amber-950 font-black px-4 py-3 rounded-2xl border-[4px] border-amber-200 shadow-lg shrink-0 mt-2 text-center text-sm md:text-2xl leading-snug">
-                        <span id="hint-text"></span>
+
+                    <div id="hint-banner" class="hidden w-full bg-amber-50 text-amber-950 text-sm md:text-2xl font-black px-4 py-3 md:px-6 md:py-6 rounded-2xl border-4 md:border-[6px] border-amber-200 shadow-lg shrink-0 mt-2 text-center justify-center flex flex-row items-center gap-3">
+                        <span id="hint-text" class="leading-snug">提示內容...</span>
                     </div>
+
                     <div id="clues-container" class="flex flex-row justify-start items-end gap-3 lg:gap-4 w-full mt-auto shrink-0 pt-4">
-                        <div class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-[4px] border-blue-500 shadow-xl overflow-hidden bg-stone-950 shrink-0">
-                            <div class="absolute top-0 left-0 bg-blue-500 text-white text-[10px] md:text-sm px-3 py-1 rounded-br-xl font-black z-10">💡 輔助線索</div>
+                        <div class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl md:rounded-3xl border-4 md:border-[6px] border-blue-500 shadow-xl overflow-hidden bg-stone-950 shrink-0">
+                            <div class="absolute top-0 left-0 bg-blue-500 text-white text-[10px] md:text-sm px-3 py-1 rounded-br-xl font-black z-10 shadow whitespace-nowrap">💡 輔助線索</div>
                             <canvas id="clue-2" class="w-full h-full object-cover"></canvas>
+                            <div class="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] pointer-events-none z-20"></div>
                         </div>
-                        <div id="clue-3-locked" class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-[4px] border-stone-600 bg-stone-800 flex flex-col items-center justify-center text-stone-400 shrink-0">
-                            <i class="fa-solid fa-lock text-2xl md:text-4xl mb-2"></i><span class="text-[10px] md:text-sm font-black text-center">解鎖線索</span>
+                        
+                        <div id="clue-3-locked" class="relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl md:rounded-3xl border-4 md:border-[6px] border-stone-600 shadow-xl overflow-hidden bg-stone-800 flex flex-col items-center justify-center text-stone-400 shrink-0">
+                            <i class="fa-solid fa-lock text-2xl md:text-4xl mb-2"></i>
+                            <span class="text-[10px] md:text-sm font-black text-center leading-tight">使用道具<br>解鎖線索</span>
                         </div>
-                        <div id="clue-3-container" class="hidden relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl border-[4px] border-green-500 overflow-hidden bg-stone-950 shrink-0">
-                            <div class="absolute top-0 left-0 bg-green-500 text-white text-[10px] md:text-sm px-3 py-1 rounded-br-xl font-black z-10">💡 額外線索</div>
+
+                        <div id="clue-3-container" class="hidden relative w-[45%] max-w-[140px] lg:max-w-[180px] aspect-square rounded-2xl md:rounded-3xl border-4 md:border-[6px] border-green-500 shadow-xl overflow-hidden bg-stone-950 shrink-0">
+                            <div class="absolute top-0 left-0 bg-green-500 text-white text-[10px] md:text-sm px-3 py-1 rounded-br-xl font-black z-10 shadow whitespace-nowrap">💡 額外線索</div>
                             <canvas id="clue-3" class="w-full h-full object-cover"></canvas>
+                            <div class="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] pointer-events-none z-20"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SCREEN 3: REVEAL -->
+        <!-- SCREEN 3: REVEAL SCREEN -->
         <div id="screen-reveal" class="absolute inset-0 z-20 hidden flex-col items-center justify-between p-6 md:p-12 sunburst-bg text-center overflow-y-auto">
             <div class="w-full flex justify-between items-center mb-4">
-                <span id="reveal-status-tag" class="bg-green-600 text-white font-black-shadow px-8 py-3 rounded-full text-2xl md:text-4xl border-4 border-green-400">答對了！</span>
-                <div id="reveal-points-tag" class="bg-amber-100 text-amber-900 font-black px-6 py-2 rounded-full border-4 border-amber-600 text-xl md:text-3xl">+100 分</div>
+                <span id="reveal-status-tag" class="bg-green-600 text-white font-black-shadow px-8 py-3 rounded-full text-2xl md:text-4xl shadow-xl border-4 border-green-400">
+                    答對了！
+                </span>
+                <div id="reveal-points-tag" class="bg-amber-100 text-amber-900 font-black px-6 py-2 rounded-full border-4 md:border-[6px] border-amber-600 text-xl md:text-3xl shadow-lg">
+                    +100 分
+                </div>
             </div>
-            <div class="my-auto w-full max-w-3xl bg-amber-50/95 border-8 border-amber-900 rounded-[2.5rem] p-6 md:p-10 shadow-2xl relative flex flex-col items-center">
-                <h2 id="reveal-item-title" class="text-5xl md:text-7xl font-black text-red-700 mb-4 md:mb-6 title-shadow"></h2>
-                <div class="w-full aspect-[16/9] max-h-[350px] rounded-3xl border-[6px] border-amber-800 overflow-hidden bg-stone-900 mb-6 relative">
+
+            <div class="my-auto w-full max-w-3xl bg-amber-50/95 border-[6px] md:border-[8px] border-amber-900 rounded-[2.5rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col items-center">
+                <h2 id="reveal-item-title" class="text-5xl md:text-7xl font-black text-red-700 mb-4 md:mb-6 title-shadow">
+                    物品名稱
+                </h2>
+
+                <div class="w-full aspect-[16/9] max-h-[250px] md:max-h-[350px] rounded-3xl border-[6px] border-amber-800 overflow-hidden bg-stone-900 mb-6 relative shadow-inner">
                     <canvas id="reveal-canvas" class="w-full h-full object-contain"></canvas>
                 </div>
-                <p id="reveal-item-desc" class="text-xl md:text-3xl text-amber-950 font-bold bg-amber-200/80 p-5 rounded-2xl border-4 border-amber-400 w-full text-left leading-relaxed"></p>
+
+                <p id="reveal-item-desc" class="text-xl md:text-3xl text-amber-950 font-bold leading-relaxed bg-amber-200/80 p-5 md:p-6 rounded-2xl border-4 border-amber-400 shadow-sm text-left w-full">
+                    物品介紹...
+                </p>
             </div>
-            <button onclick="nextQuestion()" class="retro-btn w-full max-w-lg py-5 mt-4 rounded-3xl text-3xl flex justify-center gap-4 transition-transform active:scale-95">
+
+            <button onclick="nextQuestion()" class="retro-btn w-full max-w-lg py-5 md:py-6 mt-4 md:mt-6 rounded-3xl text-3xl md:text-4xl flex items-center justify-center gap-4 transition-transform hover:scale-105 active:scale-95 shadow-2xl">
                 下一題 <i class="fa-solid fa-arrow-right"></i>
             </button>
         </div>
 
-        <!-- SCREEN 4: RESULT -->
+        <!-- SCREEN 4: RESULT SCREEN -->
         <div id="screen-result" class="absolute inset-0 z-20 hidden flex-col items-center justify-between p-6 md:p-12 sunburst-bg text-center overflow-y-auto">
             <div class="mt-6 md:mt-8">
-                <h2 class="text-5xl md:text-7xl text-amber-300 title-shadow mb-4">遊戲完成！</h2>
-                <p class="text-2xl md:text-4xl text-amber-100 font-bold">你的懷舊記憶力測試結果</p>
+                <h2 class="text-5xl md:text-7xl text-amber-300 title-shadow mb-4 drop-shadow-lg">
+                    遊戲完成！
+                </h2>
+                <p class="text-2xl md:text-4xl text-amber-100 font-bold drop-shadow-md">你的懷舊記憶力測試結果</p>
             </div>
-            <div class="w-full max-w-2xl bg-amber-50/95 border-8 border-amber-900 rounded-[3rem] p-8 md:p-12 shadow-2xl text-amber-950 my-auto">
-                <div class="text-center mb-8">
+
+            <div class="w-full max-w-2xl bg-amber-50/95 border-[6px] md:border-[8px] border-amber-900 rounded-[3rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-amber-950 my-auto">
+                <div class="text-center mb-6">
                     <span class="text-xl md:text-3xl font-black text-amber-800">最終總得分</span>
-                    <div id="final-score" class="text-7xl md:text-9xl font-black text-red-600 my-4 drop-shadow-xl">0</div>
+                    <div id="final-score" class="text-7xl md:text-9xl font-black text-red-600 my-4 drop-shadow-xl">
+                        0
+                    </div>
                 </div>
-                <div class="bg-amber-200/80 p-6 rounded-3xl border-4 border-amber-400 text-center mb-8">
+
+                <div class="bg-amber-200/80 p-6 md:p-8 rounded-3xl border-4 border-amber-400 text-center mb-6 shadow-sm">
                     <div class="text-xl md:text-2xl text-amber-800 font-black mb-2">獲封稱號</div>
-                    <div id="rank-title" class="text-4xl md:text-5xl font-black text-amber-900 mb-4"></div>
-                    <p id="rank-desc" class="text-lg md:text-2xl font-bold text-amber-800"></p>
+                    <div id="rank-title" class="text-4xl md:text-5xl font-black text-amber-900 mb-4 drop-shadow-sm">
+                        🏆 稱號
+                    </div>
+                    <p id="rank-desc" class="text-lg md:text-2xl font-bold text-amber-800 leading-relaxed">稱號說明</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 md:gap-6 text-xl md:text-3xl font-black">
+                    <div class="bg-amber-100 p-5 md:p-6 rounded-2xl border-4 border-amber-300 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-amber-700">答對題數</span>
+                        <span id="stat-correct" class="text-red-700 text-3xl md:text-5xl mt-2 drop-shadow-sm">0/20</span>
+                    </div>
+                    <div class="bg-amber-100 p-5 md:p-6 rounded-2xl border-4 border-amber-300 flex flex-col items-center justify-center shadow-sm">
+                        <span class="text-amber-700">最高連勝</span>
+                        <span id="stat-streak" class="text-orange-700 text-3xl md:text-5xl mt-2 drop-shadow-sm">0回</span>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Huge explicit button for Museum at end of round -->
+            <div class="w-full max-w-2xl mb-4 mt-2">
+                <button onclick="showScreen('museum')" class="w-full py-5 md:py-8 rounded-3xl text-2xl md:text-4xl font-black text-white bg-gradient-to-r from-purple-600 to-indigo-600 border-4 border-purple-300 shadow-[0_10px_20px_rgba(0,0,0,0.5),_inset_0_4px_0_rgba(255,255,255,0.3)] flex items-center justify-center gap-4 transition-transform hover:scale-105 active:scale-95 animate-pulse">
+                    <i class="fa-solid fa-gem text-yellow-300"></i> 前往【懷舊展覽館】重溫記憶 <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
             <div class="flex flex-col sm:flex-row gap-4 md:gap-6 w-full max-w-2xl mb-4">
-                <button onclick="showScreen('menu')" class="retro-btn flex-1 py-4 md:py-6 rounded-2xl text-xl md:text-3xl font-black flex items-center justify-center gap-3">
+                <button onclick="showScreen('menu')" class="retro-btn flex-1 py-4 md:py-6 rounded-2xl text-xl md:text-3xl font-black flex items-center justify-center gap-3 transition-transform hover:scale-105 active:scale-95 shadow-xl">
                     <i class="fa-solid fa-house"></i> 回主頁
                 </button>
-                <button onclick="startGame()" class="retro-btn flex-1 py-4 md:py-6 rounded-2xl text-xl md:text-3xl font-black !bg-gradient-to-b !from-green-500 !to-emerald-700 !text-white flex items-center justify-center gap-3">
+                <button onclick="startGame('classic')" class="retro-btn flex-1 py-4 md:py-6 rounded-2xl text-xl md:text-3xl font-black !bg-gradient-to-b !from-green-500 !to-emerald-700 !text-white border-green-300 flex items-center justify-center gap-3 transition-transform hover:scale-105 active:scale-95 shadow-xl">
                     <i class="fa-solid fa-rotate-right"></i> 再玩一次
                 </button>
             </div>
         </div>
 
-        <!-- SCREEN 5: MUSEUM -->
+        <!-- SCREEN 5: MUSEUM SCREEN -->
         <div id="screen-museum" class="absolute inset-0 z-20 hidden flex-col p-5 md:p-8 bg-stone-900 text-amber-100 overflow-hidden">
-            <div class="flex justify-between items-center border-b-[4px] border-amber-800 pb-4 mb-4 shrink-0">
-                <h2 class="text-3xl md:text-5xl font-black-shadow text-amber-400 flex items-center gap-3"><i class="fa-solid fa-box-archive"></i> 懷舊展覽館</h2>
-                <button onclick="showScreen('menu')" class="px-5 py-3 md:px-8 md:py-4 bg-amber-800 hover:bg-amber-700 text-white rounded-2xl text-xl md:text-2xl font-black border-4 border-amber-600 shadow-lg active:scale-95">返 回 <i class="fa-solid fa-xmark"></i></button>
+            <div class="flex justify-between items-center border-b-[4px] md:border-b-[6px] border-amber-800 pb-4 md:pb-6 mb-4 md:mb-6 shrink-0">
+                <h2 class="text-3xl md:text-5xl font-black-shadow text-amber-400 flex items-center gap-3 md:gap-4">
+                    <i class="fa-solid fa-box-archive"></i> 懷舊展覽館
+                </h2>
+                <div class="flex gap-2 md:gap-4">
+                     <button onclick="showScreen('result')" id="btn-back-result" class="hidden px-5 py-3 md:px-6 md:py-4 bg-purple-700 hover:bg-purple-600 text-white rounded-2xl text-lg md:text-2xl font-black border-4 border-purple-400 shadow-lg transition-transform active:scale-95">
+                        <i class="fa-solid fa-arrow-left"></i> 回結算頁
+                    </button>
+                    <button onclick="showScreen('menu')" class="px-5 py-3 md:px-8 md:py-4 bg-amber-800 hover:bg-amber-700 text-white rounded-2xl text-xl md:text-2xl font-black border-4 border-amber-600 shadow-lg transition-transform active:scale-95">
+                        回主頁 <i class="fa-solid fa-house"></i>
+                    </button>
+                </div>
             </div>
-            <div id="museum-grid" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 pr-2 pb-6"></div>
+
+            <!-- Hint text for users to click cards -->
+            <p class="text-amber-200 font-bold text-lg md:text-2xl text-center mb-4 animate-pulse"><i class="fa-solid fa-hand-pointer"></i> 點擊下方卡片可放大查看詳細介紹</p>
+
+            <div id="museum-grid" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pr-2 md:pr-4 pb-6">
+                <!-- Populated dynamically -->
+            </div>
         </div>
+        
+        <!-- SCREEN 6: MUSEUM ITEM DETAIL OVERLAY -->
+        <div id="screen-museum-detail" class="absolute inset-0 z-50 hidden flex-col items-center justify-center p-4 md:p-12 bg-black/90 backdrop-blur-sm overflow-y-auto">
+             <div class="w-full max-w-4xl bg-amber-50 border-[6px] md:border-[10px] border-amber-900 rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.8)] flex flex-col relative my-auto">
+                 
+                 <!-- Close Button -->
+                 <button onclick="closeMuseumDetail()" class="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 md:w-16 md:h-16 bg-red-600 hover:bg-red-500 text-white rounded-full border-4 border-red-300 flex items-center justify-center text-2xl md:text-4xl shadow-lg transition-transform active:scale-90 z-10">
+                     <i class="fa-solid fa-xmark"></i>
+                 </button>
+
+                 <!-- Content -->
+                 <div class="flex flex-col items-center w-full mt-4 md:mt-0">
+                     <span id="detail-category" class="bg-amber-800 text-amber-200 px-4 py-1 rounded-full font-black text-sm md:text-xl mb-3 shadow-inner">分類</span>
+                     <h2 id="detail-title" class="text-4xl md:text-7xl font-black text-red-800 mb-6 title-shadow text-center">物品名稱</h2>
+                     
+                     <!-- Huge Image Frame -->
+                     <div class="w-full aspect-[4/3] max-h-[40vh] md:max-h-[50vh] rounded-3xl border-[6px] md:border-[8px] border-amber-800 overflow-hidden bg-stone-900 mb-6 shadow-inner relative flex items-center justify-center">
+                         <!-- Using img tag here for simplicity in detail view, ensuring it scales correctly -->
+                         <img id="detail-image" src="" alt="Item" class="max-w-full max-h-full object-contain p-4 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+                         <div id="detail-image-error" class="hidden absolute inset-0 bg-stone-800 flex-col items-center justify-center text-amber-300 font-bold text-xl text-center p-4">
+                             <i class="fa-solid fa-triangle-exclamation text-4xl mb-2 text-red-500"></i><br>
+                             <span>圖片無法載入</span><br>
+                             <span id="detail-error-path" class="text-sm opacity-70 break-all"></span>
+                         </div>
+                     </div>
+                     
+                     <!-- Detailed Description Box -->
+                     <div class="w-full bg-amber-200/80 p-5 md:p-8 rounded-3xl border-4 border-amber-400 shadow-sm text-left">
+                         <h4 class="text-xl md:text-2xl font-black text-amber-900 mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> 懷舊小知識</h4>
+                         <p id="detail-desc" class="text-lg md:text-3xl text-amber-950 font-bold leading-relaxed"></p>
+                     </div>
+                     
+                     <div class="w-full flex gap-4 mt-6 md:mt-8">
+                         <button onclick="closeMuseumDetail()" class="flex-1 py-4 md:py-6 bg-amber-700 hover:bg-amber-600 text-white rounded-2xl text-xl md:text-3xl font-black border-4 border-amber-500 shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-3">
+                             <i class="fa-solid fa-arrow-left"></i> 返回展覽館
+                         </button>
+                     </div>
+                 </div>
+             </div>
+        </div>
+
     </main>
 
     <script>
         const gameState = {
-            currentScreen: 'menu', score: 0, streak: 0, maxStreak: 0, correctCount: 0, questionIndex: 0,
-            questionsList: [], currentQuestion: null, hintUsed: false, fiftyFiftyUsed: false, secondClueUsed: false,
-            hintsLeft: 3, fiftyFiftyLeft: 3, secondCluesLeft: 3, soundEnabled: true
+            mode: 'classic',
+            currentScreen: 'menu',
+            score: 0,
+            streak: 0,
+            maxStreak: 0,
+            correctCount: 0,
+            questionIndex: 0,
+            questionsList: [],
+            currentQuestion: null,
+            hintUsed: false,
+            fiftyFiftyUsed: false,
+            secondClueUsed: false,
+            hintsLeft: 3,
+            fiftyFiftyLeft: 3,
+            secondCluesLeft: 3,
+            soundEnabled: true,
+            // Image Caching System
+            imageCache: new Map(),
+            isPreloading: false
         };
 
         const interactiveLoupe = {
-            x: 0, y: 0, offscreen: null, displayW: 0, displayH: 0,
-            radius: window.innerWidth < 768 ? 70 : 110, zoom: 2.8, isDragging: false, eventsInitialized: false
+            x: 0, y: 0,
+            offscreen: null,
+            displayW: 0, displayH: 0,
+            radius: window.innerWidth < 768 ? 70 : 110,
+            zoom: 2.8,
+            isDragging: false,
+            eventsInitialized: false,
+            imgElement: null // Store reference to current image
         };
 
         function drawSunburstBg(ctx, w, h) {
@@ -219,93 +410,182 @@
             ctx.restore();
         }
 
-        // 圖片輔助函數：加入超強防呆錯誤顯示 (Missing File Fallback)
-        function drawImageHelper(url) {
-            return function(ctx, w, h) {
-                if (typeof drawSunburstBg === 'function') drawSunburstBg(ctx, w, h);
+        // ==========================================
+        // 核心更新：圖片預載入與快取系統 (Preloading System)
+        // ==========================================
+
+        // Helper to load a single image and return a Promise
+        function loadSingleImage(url) {
+            return new Promise((resolve, reject) => {
+                if (gameState.imageCache.has(url)) {
+                    resolve(gameState.imageCache.get(url)); // Already cached
+                    return;
+                }
                 const img = new Image();
-                
                 img.onload = () => {
-                    if (typeof drawSunburstBg === 'function') drawSunburstBg(ctx, w, h);
-                    const scale = Math.min(w / img.width, h / img.height) * 0.9;
-                    const iw = img.width * scale; const ih = img.height * scale;
-                    const ix = (w - iw) / 2; const iy = (h - ih) / 2;
-                    ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 10;
-                    ctx.drawImage(img, ix, iy, iw, ih); ctx.shadowColor = 'transparent';
-                    if (gameState && gameState.currentScreen === 'game' && interactiveLoupe.offscreen) renderLoupe();
+                    gameState.imageCache.set(url, img); // Store in cache
+                    resolve(img);
                 };
-
-                // 當圖片載入失敗時的「防呆」顯示，告訴開發者少了哪一張圖！
-                img.onerror = () => {
-                    if (typeof drawSunburstBg === 'function') drawSunburstBg(ctx, w, h);
-                    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                    ctx.fillRect(0, 0, w, h);
-                    ctx.fillStyle = '#fef08a';
-                    ctx.font = 'bold ' + Math.floor(w/12) + 'px sans-serif';
-                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                    ctx.fillText('圖片準備中...', w/2, h/2 - 20);
-                    ctx.font = 'bold ' + Math.floor(w/16) + 'px sans-serif';
-                    ctx.fillStyle = '#fca5a5';
-                    ctx.fillText('缺少: ' + url.split('/').pop(), w/2, h/2 + 20);
-                    if (gameState && gameState.currentScreen === 'game' && interactiveLoupe.offscreen) renderLoupe();
-                };
-
+                img.onerror = () => reject(`找不到圖片: ${url}`);
                 img.src = url;
+            });
+        }
+
+        // Proactive preloading of upcoming questions
+        async function preloadUpcomingImages() {
+            if (gameState.isPreloading || gameState.questionIndex >= gameState.questionsList.length) return;
+            gameState.isPreloading = true;
+            
+            // Preload the next 3 images in the queue
+            const startIndex = gameState.questionIndex;
+            const endIndex = Math.min(startIndex + 3, gameState.questionsList.length);
+            
+            const urlsToPreload = [];
+            for (let i = startIndex; i < endIndex; i++) {
+                if (gameState.questionsList[i].imgUrl) {
+                    urlsToPreload.push(gameState.questionsList[i].imgUrl);
+                }
+            }
+
+            // Load them silently in background
+            try {
+                await Promise.allSettled(urlsToPreload.map(url => loadSingleImage(url)));
+            } catch (e) {
+                console.warn("Background preloading issue:", e);
+            } finally {
+                gameState.isPreloading = false;
+            }
+        }
+
+        // Canvas Drawing Function utilizing Cache
+        function drawImageFromCache(url, ctx, w, h, onCompleteCallback) {
+            drawSunburstBg(ctx, w, h);
+            
+            // Function to actually draw the image once available
+            const doDraw = (img) => {
+                drawSunburstBg(ctx, w, h); // Redraw BG just in case
+                const scale = Math.min(w / img.width, h / img.height) * 0.9;
+                const iw = img.width * scale;
+                const ih = img.height * scale;
+                const ix = (w - iw) / 2;
+                const iy = (h - ih) / 2;
+                
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetY = 10;
+                ctx.drawImage(img, ix, iy, iw, ih);
+                ctx.shadowColor = 'transparent';
+                
+                if (onCompleteCallback) onCompleteCallback(true, img);
+            };
+
+            const drawError = () => {
+                drawSunburstBg(ctx, w, h);
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold ' + Math.floor(w/12) + 'px sans-serif';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('圖片準備中...', w/2, h/2 - 20);
+                ctx.font = 'bold ' + Math.floor(w/16) + 'px sans-serif';
+                ctx.fillStyle = '#fca5a5';
+                const filename = url ? url.split('/').pop() : 'unknown';
+                ctx.fillText(`缺少: ${filename}`, w/2, h/2 + 20);
+                if (onCompleteCallback) onCompleteCallback(false, null);
+            };
+
+            if (!url) {
+                drawError();
+                return;
+            }
+
+            if (gameState.imageCache.has(url)) {
+                // Instantly draw from cache
+                doDraw(gameState.imageCache.get(url));
+            } else {
+                // Wait for it to load (should rarely happen if preloading works)
+                loadSingleImage(url).then(img => {
+                    doDraw(img);
+                }).catch(err => {
+                    // 靜默處理錯誤，避免在控制台洗版
+                    drawError();
+                });
+            }
+        }
+
+        // Create a closure specifically for QUESTIONS_DATABASE mapping
+        function createDrawClosure(url) {
+            return function(ctx, w, h, callback) {
+                drawImageFromCache(url, ctx, w, h, callback);
             };
         }
 
         const QUESTIONS_DATABASE = [
-            { id: '1', name: '花繩', category: '試猜出一種遊戲', distractors: ['跳飛機', '抓豆袋', '踢繭子'], hint: '用一條棉繩在雙手十指間翻繞出各種圖案。', desc: '翻花繩是經典的雙人或單人手部遊戲！', draw: drawImageHelper('./images/花繩.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🤲', text:'雙人遊戲'}, {emoji:'🏫', text:'小息時間'}] },
-            { id: '2', name: '叮叮糖', category: '試猜出一種食物', distractors: ['龍鬚糖', '麥芽糖餅', '白雪糕'], hint: '小販會用小錘子和鑿子敲打硬麥芽糖。', desc: '香港傳統硬麥芽糖，發出「叮叮」響聲！', draw: drawImageHelper('./images/叮叮糖.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🔨', text:'鐵槌與鑿'}, {emoji:'🛒', text:'街邊小販'}] },
-            { id: '3', name: '眼鏡朱古力', category: '試猜出一種食物', distractors: ['彩虹糖', '戒指糖', '石頭糖'], hint: '8字形的包裝，常套在頭上當眼鏡。', desc: '經典「8」字形雙孔包裝，裏面裝滿彩衣朱古力豆。', draw: drawImageHelper('./images/眼鏡朱古力.png'), cluePoint: {x:0.25, y:0.5}, related: [{emoji:'➰', text:'串橡皮筋'}, {emoji:'🏪', text:'舊式士多'}] },
-            { id: '4', name: '西瓜波', category: '試猜出一種玩具', distractors: ['乒乓球', '皮球', '保齡球'], hint: '紅白相間的塑膠膠球。', desc: '1960-70年代流行的塑膠足球，紅白相間。', draw: drawImageHelper('./images/西瓜波.png'), cluePoint: {x:0.5, y:0.3}, related: [{emoji:'🏢', text:'屋邨走廊'}, {emoji:'👟', text:'白飯魚鞋'}] },
-            { id: '5', name: '吹波糖', category: '試猜出一種食物', distractors: ['山楂餅', '大白兔奶糖', '果汁軟糖'], hint: '包裝紙內通常附送刺青水印貼紙。', desc: '經典的大大大吹波糖，包裝紙能用水印在手臂上！', draw: drawImageHelper('./images/吹波糖.png'), cluePoint: {x:0.5, y:0.6}, related: [{emoji:'🐉', text:'水印紋身'}, {emoji:'🪙', text:'五毫子'}] },
-            { id: '6', name: '彈珠', category: '試猜出一種玩具', distractors: ['萬花筒', '陀螺', '竹蜻蜓'], hint: '玻璃球體內部包著五彩花瓣紋路。', desc: '晶瑩剔透的玻璃球體，昔日打彈珠遊戲的核心。', draw: drawImageHelper('./images/彈珠.png'), cluePoint: {x:0.5, y:0.65}, related: [{emoji:'🏜️', text:'沙地公園'}, {emoji:'🫙', text:'玻璃樽裝'}] },
-            { id: '7', name: '抓豆袋', category: '試猜出一種遊戲', distractors: ['跳飛機', '踢繭子', '抓抓樂'], hint: '小布袋裏裝滿紅豆或沙子。', desc: '抓豆袋是昔日經典遊戲，考驗手眼協調！', draw: drawImageHelper('./images/抓豆袋.png'), cluePoint: {x:0.4, y:0.4}, related: [{emoji:'🫘', text:'包裝綠豆'}, {emoji:'🪡', text:'手縫布袋'}] },
-            { id: '8', name: '七巧板', category: '試猜出一種玩具', distractors: ['積木', '魔方', '拼圖'], hint: '由七塊不同幾何形狀的木板組成。', desc: '傳統智力玩具，能拼湊千變萬化圖形。', draw: drawImageHelper('./images/七巧板.png'), cluePoint: {x:0.25, y:0.25}, related: [{emoji:'🦊', text:'拼出動物'}, {emoji:'🪵', text:'木製益智'}] },
-            { id: '9', name: '公仔紙', category: '試猜出一種玩具', distractors: ['換衫紙公仔', '閃卡', '撲克牌'], hint: '印有漫畫的硬紙牌，以前流行「拍公仔紙」。', desc: '1960-80年代受歡迎的玩具，小朋友常用手掌拍打爭奪！', draw: drawImageHelper('./images/公仔紙.png'), cluePoint: {x:0.2, y:0.5}, related: [{emoji:'👏', text:'拍打手勢'}, {emoji:'🦸‍♂️', text:'卡通圖案'}] },
-            { id: '10', name: '錄音帶', category: '試猜出一種用品', distractors: ['黑膠唱片', 'CD光碟', '隨身聽'], hint: '磁帶鬆了要用鉛筆轉回去。', desc: '卡式錄音帶是昔日聽歌的主要載體！', draw: drawImageHelper('./images/錄音帶.png'), cluePoint: {x:0.35, y:0.5}, related: [{emoji:'📻', text:'卡式機'}, {emoji:'✏️', text:'鉛筆捲帶'}] },
-            { id: '11', name: '梅艷芳', category: '試猜出一名人物', distractors: ['陳慧嫻', '葉蒨文', '王菲'], hint: '香港樂壇「百變天后」。', desc: '香港傳奇巨星、樂壇天后，被譽為「香港的女兒」。', draw: drawImageHelper('./images/梅艷芳.png'), cluePoint: {x:0.43, y:0.35}, related: [{emoji:'👗', text:'舞台百變'}, {emoji:'🎵', text:'《壞女孩》'}] },
-            { id: '12', name: '張學友', category: '試猜出一名人物', distractors: ['劉德華', '黎明', '郭富城'], hint: '香港「歌神」，四大天王之一。', desc: '香港樂壇華語歌神，以深情動人的歌聲風靡全球。', draw: drawImageHelper('./images/張學友.png'), cluePoint: {x:0.5, y:0.35}, related: [{emoji:'🎤', text:'樂壇歌神'}, {emoji:'🎵', text:'《吻別》'}] },
-            { id: '13', name: '波子汽水', category: '試猜出一種食物', distractors: ['沙士汽水', '可樂', '橙汁'], hint: '玻璃瓶口有一顆玻璃珠。', desc: '懷舊味十足的碳酸飲料，飲用時會發出清脆碰撞聲！', draw: drawImageHelper('./images/波子汽水.png'), cluePoint: {x:0.5, y:0.35}, related: [{emoji:'🧊', text:'冰鎮飲用'}, {emoji:'🟢', text:'按壓波子'}] },
-            { id: '14', name: '維他奶', category: '試猜出一種食物', distractors: ['鮮牛奶', '豆漿', '阿華田'], hint: '冬天常放在溫水櫃裏熱着喝。', desc: '玻璃瓶裝維他奶是香港數十年來的國民飲品！', draw: drawImageHelper('./images/glass維他奶.png'), cluePoint: {x:0.4, y:0.6}, related: [{emoji:'♨️', text:'入冬暖水櫃'}, {emoji:'🥪', text:'學校小賣部'}] },
-            { id: '15', name: '雞蛋仔', category: '試猜出一種食物', distractors: ['車輪餅', '缽仔糕', '冷糕'], hint: '外脆內軟的一粒粒球狀街頭小食。', desc: '香港極具代表性的地道街頭小食！', draw: drawImageHelper('./images/雞蛋仔.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🛍️', text:'啡色紙袋'}, {emoji:'🔥', text:'鐵模炭爐'}] },
-            { id: '16', name: '格仔餅', category: '試猜出一種食物', distractors: ['夾餅', '西多士', '菠蘿油'], hint: '網格狀烘餅對折，中間塗滿花生醬同煉奶。', desc: '滿滿的花生醬與煉奶夾在鬆軟的網格餅皮中！', draw: drawImageHelper('./images/格仔餅.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🥜', text:'花生醬煉奶'}, {emoji:'🧇', text:'對摺夾心'}] },
-            { id: '17', name: '砵仔糕', category: '試猜出一種食物', distractors: ['馬蹄糕', '桂花糕', '芝麻卷'], hint: '用兩支竹籤串住吃，裡面有很多紅豆。', desc: '裝在小瓦缽內蒸熟的傳統廣東小食。', draw: drawImageHelper('./images/砵仔糕.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🥢', text:'兩支竹籤'}, {emoji:'🥣', text:'裝在小瓦砵'}] },
-            { id: '18', name: '大白兔奶糖', category: '試猜出一種食物', distractors: ['花奶糖', '椰子糖', '瑞士糖'], hint: '有一層可以吃的透明米紙包著奶糖。', desc: '經典牛奶糖，最讓人懷念的是那層入口即化的透明米紙。', draw: drawImageHelper('./images/大白兔奶糖.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🍬', text:'透明食得米紙'}, {emoji:'🧧', text:'新年全盒'}] },
-            { id: '19', name: '紅白藍膠袋', category: '試猜出一種用品', distractors: ['買餸車', '環保袋', '麻包袋'], hint: '三種顏色相間的尼龍帆布袋，容量極大。', desc: '以紅、白、藍三色尼龍帆布製成，常用於搬屋或探親。', draw: drawImageHelper('./images/紅白藍膠袋.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'✈️', text:'行李寄艙'}, {emoji:'🏠', text:'搬屋必備'}] },
-            { id: '20', name: '撥輪電話', category: '試猜出一種用品', distractors: ['大哥大水壺', '傳呼機', '打字機'], hint: '打電話要將手指插進圓孔裡轉到底。', desc: '舊式轉盤電話，撥號會發出清脆的齒輪轉動聲。', draw: drawImageHelper('./images/撥輪電話.png'), cluePoint: {x:0.5, y:0.6}, related: [{emoji:'☎️', text:'滴滴轉盤聲'}, {emoji:'📖', text:'黃頁電話簿'}] },
-            { id: '21', name: '飛行棋', category: '試猜出一種遊戲', distractors: ['鬥獸棋', '波子棋', '康樂棋'], hint: '擲骰子要擲到「6」才能起飛。', desc: '經典桌遊，紅黃藍綠四色陣營互相追逐！', draw: drawImageHelper('./images/飛行棋.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎲', text:'擲到 6 起飛'}, {emoji:'✈️', text:'擊落對手'}] },
-            { id: '22', name: '李小龍', category: '試猜出一名人物', distractors: ['成龍', '甄子丹', '李連杰'], hint: '經典造型是穿著黃色黑條紋的連身戰衣。', desc: '截拳道創始人，以招牌的黃色戰衣與雙節棍風靡全球。', draw: drawImageHelper('./images/李小龍.png'), cluePoint: {x:0.5, y:0.6}, related: [{emoji:'🥋', text:'截拳道'}, {emoji:'🎞️', text:'經典武打電影'}] },
-            { id: '23', name: '綠寶橙汁', category: '試猜出一種食物', distractors: ['芬達', '陽光橙汁', '忌廉汽水'], hint: '經典玻璃樽裝無氣橙汁。', desc: '以獨特的玻璃樽和不含泡沫的香濃橙汁聞名。', draw: drawImageHelper('./images/綠寶橙汁.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🍊', text:'無氣橙汁'}, {emoji:'🧊', text:'士多冰櫃'}] },
-            { id: '24', name: '鐵皮青蛙', category: '試猜出一種玩具', distractors: ['塑膠鴨仔', '鐵皮發條車', '不倒翁'], hint: '上鏈後會一下一下往前跳。', desc: '經典發條玩具，扭緊發條後會在地上蹦蹦跳跳。', draw: drawImageHelper('./images/鐵皮青蛙.png'), cluePoint: {x:0.7, y:0.4}, related: [{emoji:'🔑', text:'發條上鏈'}, {emoji:'🐸', text:'金屬外殼'}] },
-            { id: '25', name: '紅膠豬仔錢罌', category: '試猜出一種用品', distractors: ['招財貓', '保險箱', '鐵罐'], hint: '儲滿了要剪開拿錢的紅色塑膠小豬。', desc: '傳統紅膠豬仔錢罌，滿了就要「開肚」。', draw: drawImageHelper('./images/紅膠豬仔錢罌.png'), cluePoint: {x:0.5, y:0.4}, related: [{emoji:'🪙', text:'儲蓄五毫子'}, {emoji:'✂️', text:'剪刀開肚'}] },
-            { id: '26', name: '雞毛掃', category: '試猜出一種用品', distractors: ['掃把', '拖把', '拍塵拍'], hint: '可以用來打掃，也是以前阿媽的「武器」。', desc: '傳統清潔工具，那根柔韌的藤條柄是無數人的回憶。', draw: drawImageHelper('./images/雞毛掃.png'), cluePoint: {x:0.5, y:0.3}, related: [{emoji:'🧹', text:'撢走灰塵'}, {emoji:'💥', text:'阿媽藤條'}] },
-            { id: '27', name: '豬仔餅', category: '試猜出一種食物', distractors: ['雞仔餅', '光酥餅', '老婆餅'], hint: '裝在彩色的塑膠小竹籠裡，中秋節常見。', desc: '舊時麵包舖用剩餘的月餅皮焗製而成。', draw: drawImageHelper('./images/豬仔餅.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🥮', text:'中秋月餅皮'}, {emoji:'🏮', text:'彩色膠竹籠'}] },
-            { id: '28', name: '萬金油', category: '試猜出一種用品', distractors: ['白花油', '紅花油', '活絡油'], hint: '六角形的小玻璃樽，紅色鐵蓋印著老虎。', desc: '清涼的藥膏專治蚊叮蟲咬、頭暈頭痛。', draw: drawImageHelper('./images/萬金油.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🐯', text:'躍動金虎'}, {emoji:'🤕', text:'蚊叮頭暈'}] },
-            { id: '29', name: '磁石釣魚機', category: '試猜出一種玩具', distractors: ['夾公仔機', '波子機', '彈珠台'], hint: '圓形轉盤會轉，魚兒會上下張開嘴巴。', desc: '魚兒張口時要眼明手快將磁石魚餌放進去！', draw: drawImageHelper('./images/磁石釣魚機.png'), cluePoint: {x:0.4, y:0.4}, related: [{emoji:'🎣', text:'磁石魚竿'}, {emoji:'🔄', text:'旋轉轉盤'}] },
-            { id: '30', name: '沈殿霞', category: '試猜出一名人物', distractors: ['鄭裕玲', '薛家燕', '汪明荃'], hint: '標誌性造型是貓頭鷹髮型和黑框眼鏡。', desc: '被譽為「開心果」的香港傳奇主持及喜劇演員。', draw: drawImageHelper('./images/沈殿霞.png'), cluePoint: {x:0.5, y:0.35}, related: [{emoji:'🦉', text:'貓頭鷹髮型'}, {emoji:'📺', text:'歡樂今宵'}] },
-            { id: '31', name: '芝麻卷', category: '試猜出一種食物', distractors: ['豬腸粉', '倫教糕', '黑糖糕'], hint: '外型像一卷攝影菲林的黑色甜點。', desc: '充滿濃郁芝麻香，常被稱為「菲林」。', draw: drawImageHelper('./images/芝麻卷.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎞️', text:'黑色菲林'}, {emoji:'🖤', text:'濃郁芝麻'}] },
-            { id: '32', name: '波子棋', category: '試猜出一種遊戲', distractors: ['飛行棋', '象棋', '黑白棋'], hint: '六角星形的棋盤，棋子是玻璃波子。', desc: '將自己陣營的波子最快跳到對角就獲勝！', draw: drawImageHelper('./images/波子棋.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'⭐', text:'六角星盤'}, {emoji:'🔴', text:'玻璃波子'}] },
-            { id: '33', name: '山楂餅', category: '試猜出一種食物', distractors: ['陳皮梅', '嘉應子', '甘草檸檬'], hint: '圓形薄片的深紅色糖果，用紙包裝成筒狀。', desc: '深紅色的山楂薄片，是中藥苦口時的最佳配搭。', draw: drawImageHelper('./images/山楂餅.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🔴', text:'層疊薄片'}, {emoji:'☕', text:'伴吃苦茶'}] },
-            { id: '34', name: '戒指糖', category: '試猜出一種食物', distractors: ['鑽石糖', '珍寶珠', '彩虹糖'], hint: '像是一顆巨大的寶石，可以戴在手指上。', desc: '巨大的寶石形狀糖果套在手指上，邊玩邊吃。', draw: drawImageHelper('./images/戒指糖.png'), cluePoint: {x:0.5, y:0.4}, related: [{emoji:'💍', text:'戴在手指'}, {emoji:'💎', text:'巨大寶石'}] },
-            { id: '35', name: '金幣朱古力', category: '試猜出一種食物', distractors: ['朱古力豆', '酒心朱古力', '金莎'], hint: '用金色錫紙包裝成硬幣的形狀。', desc: '金光閃閃的硬幣造型朱古力，新年全盒必備。', draw: drawImageHelper('./images/金幣朱古力.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'💰', text:'金色錫紙'}, {emoji:'🧧', text:'新年全盒'}] },
-            { id: '36', name: '麥芽糖夾餅', category: '試猜出一種食物', distractors: ['夾餅', '威化餅', '梳打餅'], hint: '兩塊圓形梳打餅夾著厚厚的麥芽糖。', desc: '小販用竹籤捲起濃稠麥芽糖，再用梳打餅夾住。', draw: drawImageHelper('./images/麥芽糖夾餅.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🍪', text:'圓形梳打餅'}, {emoji:'🥢', text:'竹籤捲糖'}] },
-            { id: '37', name: '糖蔥餅', category: '試猜出一種食物', distractors: ['龍鬚糖', '叮叮糖', '糯米糍'], hint: '白色的薄餅皮包著一絲絲像蔥段的白糖。', desc: '將麥芽糖拉扯成佈滿小孔的糖蔥，再用薄餅皮捲起。', draw: drawImageHelper('./images/糖蔥餅.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🌯', text:'薄餅皮捲'}, {emoji:'🧅', text:'酥脆白糖'}] },
-            { id: '38', name: '媽咪麵', category: '試猜出一種食物', distractors: ['福字麵', '出前一丁', '營多撈麵'], hint: '黃色包裝，吃之前要捏碎並加入調味粉。', desc: '童年最愛的零食麵！不需要煮，香脆可口。', draw: drawImageHelper('./images/媽咪麵.png'), cluePoint: {x:0.5, y:0.4}, related: [{emoji:'👾', text:'藍色怪獸'}, {emoji:'🧂', text:'味精粉包'}] },
-            { id: '39', name: '龍鬚糖', category: '試猜出一種食物', distractors: ['糖蔥餅', '棉花糖', '叮叮糖'], hint: '外表像蠶絲，裡面包著花生碎和芝麻。', desc: '師傅將麥芽糖反覆拉扯成千絲萬縷的糖絲。', draw: drawImageHelper('./images/龍鬚糖.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🧶', text:'千絲萬縷'}, {emoji:'🥜', text:'花生芝麻餡'}] },
-            { id: '40', name: '花露水', category: '試猜出一種用品', distractors: ['白花油', '驅蚊水', '香水'], hint: '一種傳統香水，長輩常用來消暑、驅蚊或去除異味。', desc: '經典的復古玻璃樽裝花露水，香氣獨特。', draw: drawImageHelper('./images/花露水.png'), cluePoint: {x:0.5, y:0.6}, related: [{emoji:'🦟', text:'消暑防蚊'}, {emoji:'🌸', text:'經典香氣'}] },
-            { id: '41', name: '套圈水機', category: '試猜出一種玩具', distractors: ['Game Boy', '彈珠機', '電子寵物'], hint: '透明塑膠機身裝滿水，按按鈕會噴出水流套圈圈。', desc: '利用按鈕控制水流，努力將小圈圈套進針柱裡。', draw: drawImageHelper('./images/套圈水機.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'💧', text:'水壓噴流'}, {emoji:'⭕', text:'彩色圈圈'}] },
-            { id: '42', name: '康樂棋', category: '試猜出一種遊戲', distractors: ['波子棋', '桌球', '冰壺'], hint: '用長木桿將圓形的棋子打入四個角落的洞中。', desc: '香港經典康樂設施，玩法類似桌球。', draw: drawImageHelper('./images/康樂棋.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎱', text:'撞擊入洞'}, {emoji:'🏒', text:'長木桿打擊'}] },
-            { id: '43', name: '扭計骰', category: '試猜出一種玩具', distractors: ['七巧板', '積木', '迷宮'], hint: '一個正方體的玩具，要轉動它讓每一面變成單一顏色。', desc: '經典益智玩具，考驗空間邏輯與記憶力。', draw: drawImageHelper('./images/扭計骰.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎲', text:'六面顏色'}, {emoji:'🧠', text:'考驗邏輯'}] },
-            { id: '44', name: '膠劍仔', category: '試猜出一種玩具', distractors: ['積木', '兵器模型', '牙籤'], hint: '五顏六色、很小把的塑膠劍。', desc: '小學生之間極受歡迎的平價玩具，用手指彈擊。', draw: drawImageHelper('./images/膠劍仔.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🗡️', text:'五顏六色'}, {emoji:'🤏', text:'手指彈擊'}] },
-            { id: '45', name: 'Game Boy', category: '試猜出一種玩具', distractors: ['紅白機', '電子寵物', 'PSP'], hint: '螢幕只有綠黑色，最經典遊戲是俄羅斯方塊。', desc: '任天堂推出的經典掌上遊戲機。', draw: drawImageHelper('./images/Game Boy.png'), cluePoint: {x:0.5, y:0.3}, related: [{emoji:'👾', text:'綠黑螢幕'}, {emoji:'🔋', text:'四粒AA電'}] },
-            { id: '46', name: '東南西北', category: '試猜出一種遊戲', distractors: ['摺紙飛機', '公仔紙', '塔羅牌'], hint: '套在四隻手指上開合，裡面寫著懲罰或預言。', desc: '經典的課堂小遊戲，打開裡面會看到預言。', draw: drawImageHelper('./images/東南西北.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'📜', text:'摺紙遊戲'}, {emoji:'👉', text:'手指開合'}] },
-            { id: '47', name: '搖搖', category: '試猜出一種玩具', distractors: ['陀螺', '竹蜻蜓', '扯鈴'], hint: '用一條棉線連著圓盤，可以做出帶狗散步等花式動作。', desc: '經典搖搖玩具，絕招花式風靡全港校園！', draw: drawImageHelper('./images/搖搖.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🪀', text:'帶狗散步'}, {emoji:'🥤', text:'汽水限量版'}] },
-            { id: '48', name: '竹蜻蜓', category: '試猜出一種玩具', distractors: ['陀螺', '風箏', '飛盤'], hint: '一根木棍上面連著螺旋槳，雙手一搓就會飛。', desc: '古老而簡單的飛行玩具，利用雙手搓動產生升力。', draw: drawImageHelper('./images/竹蜻蜓.png'), cluePoint: {x:0.5, y:0.3}, related: [{emoji:'🚁', text:'雙手搓飛'}, {emoji:'🪵', text:'木製螺旋'}] },
-            { id: '49', name: '萬花筒', category: '試猜出一種玩具', distractors: ['望遠鏡', '放大鏡', '顯微鏡'], hint: '轉動圓筒，會看到裡面彩色碎片的對稱圖案不斷變化。', desc: '利用鏡子反射原理製成的光學玩具，圖案絢麗無比。', draw: drawImageHelper('./images/萬花筒.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🌌', text:'鏡面反射'}, {emoji:'🔄', text:'旋轉圓筒'}] },
-            { id: '50', name: '紅白機手掣', category: '試猜出一種玩具', distractors: ['Game Boy', '遙控器', '錄影帶'], hint: '長方形遊戲手把，有經典的金色面板和紅色A、B按鈕。', desc: '任天堂紅白機的經典控制器。', draw: drawImageHelper('./images/紅白機手掣.png'), cluePoint: {x:0.5, y:0.5}, related: [{emoji:'🎮', text:'金色面板'}, {emoji:'👆', text:'紅色AB掣'}] }
+            // 🍧 懷舊小食及飲品 (19 題)
+            { id: 'q1', name: '叮叮糖', category: '懷舊小食及飲品', distractors: ['龍鬚糖', '麥芽糖餅', '白雪糕'], hint: '小販會用小錘子和鑿子敲打硬麥芽糖發出叮叮聲。', desc: '香港傳統硬麥芽糖，傳統小販會用鑿子將一大塊糖敲碎，發出「叮叮」響聲！', imgUrl: './images/叮叮糖.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🔨', text: '鐵槌與鑿'}, {emoji: '🛒', text: '街邊小販'}] },
+            { id: 'q2', name: '眼鏡朱古力', category: '懷舊小食及飲品', distractors: ['彩虹糖', '戒指糖', '石頭糖'], hint: '8字形的包裝，小時候常套在頭上當眼鏡。', desc: '擁有經典「8」字形雙孔包裝，裏面裝滿彩衣朱古力豆，兩端小孔可用橡筋串起當眼鏡戴！', imgUrl: './images/眼鏡朱古力.png', cluePoint: {x: 0.25, y: 0.5}, related: [{emoji: '➰', text: '串橡皮筋'}, {emoji: '🏪', text: '舊式士多'}] },
+            { id: 'q3', name: '吹波糖', category: '懷舊小食及飲品', distractors: ['山楂餅', '大白兔奶糖', '果汁軟糖'], hint: '包裝紙內通常附送刺青水印貼紙，越吹越大。', desc: '經典的大大大吹波糖，香甜多汁，包裝紙還能用水印在手臂上！', imgUrl: './images/吹波糖.png', cluePoint: {x: 0.5, y: 0.6}, related: [{emoji: '🐉', text: '水印紋身'}, {emoji: '🪙', text: '五毫子'}] },
+            { id: 'q4', name: '波子汽水', category: '懷舊小食及飲品', distractors: ['沙士汽水', '可樂', '綠寶橙汁'], hint: '玻璃瓶口有一顆玻璃珠，喝之前要用蓋子按下去。', desc: '懷舊味十足的碳酸飲料，瓶口的玻璃波子在飲用時會發出清脆碰撞聲！', imgUrl: './images/波子汽水.png', cluePoint: {x: 0.5, y: 0.35}, related: [{emoji: '🧊', text: '冰鎮飲用'}, {emoji: '🟢', text: '按壓波子'}] },
+            { id: 'q5', name: '維他奶', category: '懷舊小食及飲品', distractors: ['鮮牛奶', '豆漿', '阿華田'], hint: '經典玻璃瓶裝飲品，冬天常放在溫水櫃裏熱着喝。', desc: '玻璃瓶裝維他奶是香港數十年來的國民飲品，「點止汽水咁簡單」！', imgUrl: './images/glass維他奶.png', cluePoint: {x: 0.4, y: 0.6}, related: [{emoji: '♨️', text: '入冬暖水櫃'}, {emoji: '🥪', text: '學校小賣部'}] },
+            { id: 'q6', name: '雞蛋仔', category: '懷舊小食及飲品', distractors: ['車輪餅', '缽仔糕', '冷糕'], hint: '外脆內軟的一粒粒球狀街頭小食，散發濃郁蛋香。', desc: '香港極具代表性的地道街頭小食，由蜂巢狀鐵模烘烤而成，金黃香脆！', imgUrl: './images/雞蛋仔.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🛍️', text: '啡色紙袋'}, {emoji: '🔥', text: '鐵模炭爐'}] },
+            { id: 'q7', name: '格仔餅', category: '懷舊小食及飲品', distractors: ['夾餅', '西多士', '菠蘿油'], hint: '圓形網格狀的烘餅對折，中間塗滿花生醬同煉奶。', desc: '現烘現做，滿滿的花生醬、煉奶、牛油與砂糖夾在鬆軟的網格餅皮中！', imgUrl: './images/格仔餅.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🥜', text: '花生醬煉奶'}, {emoji: '🧇', text: '對摺夾心'}] },
+            { id: 'q8', name: '砵仔糕', category: '懷舊小食及飲品', distractors: ['馬蹄糕', '桂花糕', '芝麻卷'], hint: '用黃糖或白糖製成，裡面有很多紅豆，通常用兩支竹籤串住吃。', desc: '傳統廣東小食，裝在小瓦缽內蒸熟，口感煙韌，充滿紅豆香與黃糖甘甜。', imgUrl: './images/砵仔糕.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🥢', text: '兩支竹籤'}, {emoji: '🥣', text: '裝在小瓦砵'}] },
+            { id: 'q9', name: '大白兔奶糖', category: '懷舊小食及飲品', distractors: ['花奶糖', '椰子糖', '瑞士糖'], hint: '包裝紙是藍白色的，裡面有一層可以吃的透明米紙包著奶糖。', desc: '經典牛奶糖，最讓人懷念的是那層入口即化的透明威化米紙，奶香濃郁。', imgUrl: './images/大白兔奶糖.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🍬', text: '透明食得米紙'}, {emoji: '🧧', text: '新年全盒'}] },
+            { id: 'q10', name: '綠寶橙汁', category: '懷舊小食及飲品', distractors: ['芬達', '陽光橙汁', '忌廉汽水'], hint: '經典玻璃樽裝無氣橙汁，沒有碳酸，橙味香濃。', desc: '綠寶橙汁是香港幾代人的集體回憶，以獨特的玻璃樽和不含泡沫的香濃橙汁聞名。', imgUrl: './images/綠寶橙汁.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🍊', text: '無氣橙汁'}, {emoji: '🧊', text: '士多冰櫃'}] },
+            { id: 'q11', name: '豬仔餅', category: '懷舊小食及飲品', distractors: ['雞仔餅', '光酥餅', '老婆餅'], hint: '中秋節常見，用月餅皮做成小豬形狀，裝在彩色的塑膠小竹籠裡。', desc: '豬仔餅（又稱豬籠餅），是舊時麵包舖用剩餘的月餅皮焗製而成，裝在彩色膠籠內，中秋氣氛濃郁。', imgUrl: './images/豬仔餅.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🥮', text: '中秋月餅皮'}, {emoji: '🏮', text: '彩色膠竹籠'}] },
+            { id: 'q12', name: '媽咪麵', category: '懷舊小食及飲品', distractors: ['福字麵', '出前一丁', '營多撈麵'], hint: '黃色包裝，有一隻藍色怪獸，吃之前要捏碎並加入調味粉。', desc: '童年最愛的零食麵！不需要煮，加入味精粉後搖勻，香脆可口。', imgUrl: './images/媽咪麵.png', cluePoint: {x: 0.5, y: 0.4}, related: [{emoji: '👾', text: '藍色怪獸'}, {emoji: '🧂', text: '味精粉包'}] },
+            { id: 'q13', name: '芝麻卷', category: '懷舊小食及飲品', distractors: ['豬腸粉', '倫教糕', '黑糖糕'], hint: '黑色一卷卷的甜點，外型像一卷攝影菲林。', desc: '傳統港式甜品，充滿濃郁芝麻香，因為外型黑漆漆捲起來，常被稱為「菲林」。', imgUrl: './images/芝麻卷.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🎞️', text: '黑色菲林'}, {emoji: '🖤', text: '濃郁芝麻'}] },
+            { id: 'q14', name: '麥芽糖夾餅', category: '懷舊小食及飲品', distractors: ['夾餅', '威化餅', '梳打餅'], hint: '兩塊圓形梳打餅夾著厚厚、牽絲的麥芽糖。', desc: '街邊小販用竹籤捲起濃稠麥芽糖，再用兩片梳打餅夾住，簡單卻甜蜜的童年味道。', imgUrl: './images/麥芽糖夾餅.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🍪', text: '圓形梳打餅'}, {emoji: '🥢', text: '竹籤捲糖'}] },
+            { id: 'q15', name: '糖蔥餅', category: '懷舊小食及飲品', distractors: ['龍鬚糖', '叮叮糖', '糯米糍'], hint: '白色的薄餅皮包著一絲絲像蔥段一樣酥脆的白糖。', desc: '傳統街頭小食，將麥芽糖拉扯成佈滿小孔的糖蔥，再用薄餅皮捲起，口感酥脆香甜。', imgUrl: './images/糖蔥餅.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🌯', text: '薄餅皮捲'}, {emoji: '🧅', text: '酥脆白糖'}] },
+            { id: 'q16', name: '龍鬚糖', category: '懷舊小食及飲品', distractors: ['糖蔥餅', '棉花糖', '叮叮糖'], hint: '外表像一團白色的蠶絲，裡面包著花生碎和芝麻。', desc: '傳統民間小食，師傅將麥芽糖反覆拉扯成千絲萬縷的糖絲，入口即化，香甜滿溢。', imgUrl: './images/龍鬚糖.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🧶', text: '千絲萬縷'}, {emoji: '🥜', text: '花生芝麻餡'}] },
+            { id: 'q17', name: '山楂餅', category: '懷舊小食及飲品', distractors: ['陳皮梅', '嘉應子', '甘草檸檬'], hint: '圓形薄片的深紅色糖果，通常疊成一條圓柱體用紙包裝。', desc: '傳統酸甜小食，深紅色的山楂薄片疊成一筒，用紙包裝，是中藥苦口時的最佳配搭。', imgUrl: './images/山楂餅.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🔴', text: '層疊薄片'}, {emoji: '☕', text: '伴吃苦茶'}] },
+            { id: 'q18', name: '戒指糖', category: '懷舊小食及飲品', distractors: ['鑽石糖', '珍寶珠', '彩虹糖'], hint: '像是一顆巨大的寶石，底部有一個塑膠環可以戴在手指上吃。', desc: '小時候女孩最愛的零食兼飾物，巨大的寶石形狀糖果套在手指上，邊玩邊吃。', imgUrl: './images/戒指糖.png', cluePoint: {x: 0.5, y: 0.4}, related: [{emoji: '💍', text: '戴在手指'}, {emoji: '💎', text: '巨大寶石'}] },
+            { id: 'q19', name: '金幣朱古力', category: '懷舊小食及飲品', distractors: ['朱古力豆', '酒心朱古力', '金莎'], hint: '用金色錫紙包裝成硬幣的形狀，新年全盒裡必備的甜點。', desc: '金光閃閃的硬幣造型朱古力，新年期間特別受歡迎，象徵財源滾滾、好運連連。', imgUrl: './images/金幣朱古力.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '💰', text: '金色錫紙'}, {emoji: '🧧', text: '新年全盒'}] },
+
+            // 🪀 懷舊玩具及遊戲 (19 題)
+            { id: 'q20', name: '花繩', category: '懷舊玩具及遊戲', distractors: ['跳飛機', '抓豆袋', '踢繭子'], hint: '用一條棉繩在雙手十指間翻繞出各種圖案。', desc: '翻花繩是經典的雙人或單人手部遊戲，能扯出「東京塔」、「井字」等豐富變化！', imgUrl: './images/花繩.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🤲', text: '雙人遊戲'}, {emoji: '🏫', text: '小息時間'}] },
+            { id: 'q21', name: '西瓜波', category: '懷舊玩具及遊戲', distractors: ['乒乓球', '皮球', '保齡球'], hint: '紅白相間的塑膠膠球，六七十年代屋邨小孩最愛。', desc: '1960-70年代流行的塑膠足球，因紅白相間的花紋像西瓜而得名，質感輕巧。', imgUrl: './images/西瓜波.png', cluePoint: {x: 0.5, y: 0.3}, related: [{emoji: '🏢', text: '屋邨走廊'}, {emoji: '👟', text: '白飯魚鞋'}] },
+            { id: 'q22', name: '彈珠', category: '懷舊玩具及遊戲', distractors: ['萬花筒', '陀螺', '竹蜻蜓'], hint: '玻璃球體內部包著五彩繽紛的花瓣紋路。', desc: '晶瑩剔透的玻璃球體，內部包含著美麗的彩色貓眼花紋，是昔日打彈珠遊戲的核心。', imgUrl: './images/彈珠.png', cluePoint: {x: 0.5, y: 0.65}, related: [{emoji: '🏜️', text: '沙地公園'}, {emoji: '🫙', text: '玻璃樽裝'}] },
+            { id: 'q23', name: '抓豆袋', category: '懷舊玩具及遊戲', distractors: ['跳飛機', '踢繭子', '抓抓樂'], hint: '小布袋裏裝滿紅豆或沙子，考驗拋接反應。', desc: '抓豆袋（拋豆袋）是昔日經典遊戲，用小布袋裝入紅豆，考驗手眼協調！', imgUrl: './images/抓豆袋.png', cluePoint: {x: 0.4, y: 0.4}, related: [{emoji: '🫘', text: '包裝綠豆'}, {emoji: '🪡', text: '手縫布袋'}] },
+            { id: 'q24', name: '七巧板', category: '懷舊玩具及遊戲', distractors: ['積木', '魔方', '拼圖'], hint: '由七塊不同幾何形狀的木板組成，可以拼出各種圖案。', desc: '傳統智力玩具，由五塊三角形、一塊正方形和一塊平行四邊形組成，能拼湊千變萬化圖形。', imgUrl: './images/七巧板.png', cluePoint: {x: 0.25, y: 0.25}, related: [{emoji: '🦊', text: '拼出動物'}, {emoji: '🪵', text: '木製益智'}] },
+            { id: 'q25', name: '公仔紙', category: '懷舊玩具及遊戲', distractors: ['換衫紙公仔', '閃卡', '撲克牌'], hint: '印有漫畫的硬紙牌，以前小朋友流行放在掌心拍打。', desc: '1960-80年代受歡迎的玩具，印有各式人物故事，小朋友常用手掌拍打空氣爭奪！', imgUrl: './images/公仔紙.png', cluePoint: {x: 0.2, y: 0.5}, related: [{emoji: '👏', text: '拍打手勢'}, {emoji: '🦸‍♂️', text: '卡通圖案'}] },
+            { id: 'q26', name: '飛行棋', category: '懷舊玩具及遊戲', distractors: ['鬥獸棋', '波子棋', '康樂棋'], hint: '擲骰子要擲到「6」才能起飛，棋子形狀像一架小飛機。', desc: '經典桌遊，紅黃藍綠四色陣營，互相追逐擊落對手，最先將四架飛機駛入終點者勝出。', imgUrl: './images/飛行棋.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🎲', text: '擲到 6 起飛'}, {emoji: '✈️', text: '擊落對手'}] },
+            { id: 'q27', name: '鐵皮青蛙', category: '懷舊玩具及遊戲', distractors: ['塑膠鴨仔', '發條老鼠', '不倒翁'], hint: '上鏈後會一下一下往前跳的綠色金屬玩具。', desc: '經典發條玩具，綠色底色帶有花紋，扭緊發條後會在地上蹦蹦跳跳，充滿金屬碰撞聲。', imgUrl: './images/鐵皮青蛙.png', cluePoint: {x: 0.7, y: 0.4}, related: [{emoji: '🔑', text: '發條上鏈'}, {emoji: '🐸', text: '金屬外殼'}] },
+            { id: 'q28', name: '磁石釣魚機', category: '懷舊玩具及遊戲', distractors: ['夾公仔機', '波子機', '彈珠台'], hint: '圓形轉盤會一直轉，魚兒會上下張開嘴巴，你要用有磁鐵的釣竿釣牠們。', desc: '裝上電池後轉盤會旋轉並播放音樂，魚兒張口時要眼明手快將磁石魚餌放進去！', imgUrl: './images/磁石釣魚機.png', cluePoint: {x: 0.4, y: 0.4}, related: [{emoji: '🎣', text: '磁石魚竿'}, {emoji: '🔄', text: '旋轉轉盤'}] },
+            { id: 'q29', name: '波子棋', category: '懷舊玩具及遊戲', distractors: ['飛行棋', '象棋', '黑白棋'], hint: '六角星形的棋盤，棋子是一顆顆玻璃波子，要跳過別人的棋子前進。', desc: '經典家庭桌遊，支援多人同樂，將自己陣營的波子最快跳到對角就獲勝！', imgUrl: './images/波子棋.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '⭐', text: '六角星盤'}, {emoji: '🔴', text: '玻璃波子'}] },
+            { id: 'q30', name: '康樂棋', category: '懷舊玩具及遊戲', distractors: ['波子棋', '桌球', '冰壺'], hint: '用長木桿將圓形的棋子打入四個角落的洞中，玩法類似桌球。', desc: '香港經典康樂設施，常見於屋邨社區中心，用長木棍擊打圓形棋子入洞得分。', imgUrl: './images/康樂棋.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🎱', text: '撞擊入洞'}, {emoji: '🏒', text: '長木桿打擊'}] },
+            { id: 'q31', name: '扭計骰', category: '懷舊玩具及遊戲', distractors: ['七巧板', '積木', '迷宮'], hint: '一個正方體的玩具，要轉動它讓每一面變成單一顏色。', desc: '經典益智玩具 (Rubik\'s Cube)，考驗空間邏輯與記憶力，復原六面顏色是童年的巨大挑戰。', imgUrl: './images/扭計骰.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🎲', text: '六面顏色'}, {emoji: '🧠', text: '考驗邏輯'}] },
+            { id: 'q32', name: '膠劍仔', category: '懷舊玩具及遊戲', distractors: ['積木', '兵器模型', '牙籤'], hint: '五顏六色、很小把的塑膠劍，小學生會用手指互相彈擊對戰。', desc: '小學生之間極受歡迎的平價文具店玩具，用手指互相彈擊，將對手的劍壓住就算贏。', imgUrl: './images/膠劍仔.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🗡️', text: '五顏六色'}, {emoji: '🤏', text: '手指彈擊'}] },
+            { id: 'q33', name: 'Game Boy', category: '懷舊玩具及遊戲', distractors: ['紅白機', '電子寵物', 'PSP'], hint: '螢幕只有綠黑色，要入四粒AA電，最經典遊戲是俄羅斯方塊。', desc: '任天堂推出的經典掌上遊戲機，厚重的灰色機身承載了無數人挑燈夜戰的童年回憶。', imgUrl: './images/Game Boy.png', cluePoint: {x: 0.5, y: 0.3}, related: [{emoji: '👾', text: '綠黑螢幕'}, {emoji: '🔋', text: '四粒AA電'}] },
+            { id: 'q34', name: '東南西北', category: '懷舊玩具及遊戲', distractors: ['摺紙飛機', '公仔紙', '塔羅牌'], hint: '套在四隻手指上開合，裡面寫著懲罰或預言。', desc: '經典的課堂摺紙小遊戲，打開裡面會看到同學寫下的搞笑預言或懲罰。', imgUrl: './images/東南西北.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '📜', text: '摺紙遊戲'}, {emoji: '👉', text: '手指開合'}] },
+            { id: 'q35', name: '搖搖', category: '懷舊玩具及遊戲', distractors: ['陀螺', '竹蜻蜓', '扯鈴'], hint: '用一條棉線連著圓盤，可以做出「帶狗散步」等花式動作。', desc: '經典的搖搖（Yo-Yo）玩具，以前經常有汽水品牌推出限量版，絕招花式風靡全港校園！', imgUrl: './images/搖搖.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🪀', text: '帶狗散步'}, {emoji: '🥤', text: '汽水限量版'}] },
+            { id: 'q36', name: '套圈水機', category: '懷舊玩具及遊戲', distractors: ['彈珠機', 'Game Boy', '電子寵物'], hint: '透明的塑膠機身裝滿水，按按鈕會噴出水流，把小圈圈套在柱子上。', desc: '經典手持水壓遊戲機！利用按鈕控制水流，努力將所有彩色小圈圈套進針柱裡，極度考驗耐性。', imgUrl: './images/套圈水機.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '💧', text: '水壓噴流'}, {emoji: '⭕', text: '彩色圈圈'}] },
+            { id: 'q37', name: '竹蜻蜓', category: '懷舊玩具及遊戲', distractors: ['陀螺', '風箏', '飛盤'], hint: '一根木棍上面連著螺旋槳，雙手一搓就會飛上天。', desc: '古老而簡單的飛行玩具，利用雙手搓動產生升力，也是某知名藍色機器貓的招牌法寶。', imgUrl: './images/竹蜻蜓.png', cluePoint: {x: 0.5, y: 0.3}, related: [{emoji: '🚁', text: '雙手搓飛'}, {emoji: '🪵', text: '木製螺旋'}] },
+            { id: 'q38', name: '萬花筒', category: '懷舊玩具及遊戲', distractors: ['望遠鏡', '放大鏡', '顯微鏡'], hint: '轉動圓筒，會看到裡面彩色碎片的對稱圖案不斷變化。', desc: '利用鏡子反射原理製成的光學玩具，裡面裝滿彩珠，每次轉動都有絢麗無比的對稱圖案。', imgUrl: './images/萬花筒.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🌌', text: '鏡面反射'}, {emoji: '🔄', text: '旋轉圓筒'}] },
+            { id: 'q39', name: '紅白機手掣', category: '懷舊玩具及遊戲', distractors: ['Game Boy', '遙控器', '錄影帶'], hint: '長方形遊戲手把，有經典的金色面板和紅色A、B按鈕。', desc: '任天堂紅白機 (Famicom) 的經典控制器，輸入「上上下下左右左右BA」的童年秘密武器。', imgUrl: './images/紅白機手掣.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🎮', text: '金色面板'}, {emoji: '👆', text: '紅色AB掣'}] },
+
+            // 📻 懷舊日用品 (7 題)
+            { id: 'q40', name: '錄音帶', category: '懷舊日用品', distractors: ['黑膠唱片', 'CD光碟', '隨身聽'], hint: '用磁帶記錄音樂，磁帶鬆了要用鉛筆轉回去。', desc: '卡式錄音帶（Cassette Tape）是昔日聽歌的主要載體，用隨身聽播放的青春回憶！', imgUrl: './images/錄音帶.png', cluePoint: {x: 0.35, y: 0.5}, related: [{emoji: '📻', text: '卡式機'}, {emoji: '✏️', text: '鉛筆捲帶'}] },
+            { id: 'q41', name: '紅白藍膠袋', category: '懷舊日用品', distractors: ['買餸車', '環保袋', '麻包袋'], hint: '三種顏色相間的尼龍帆布袋，容量極大，代表香港人堅毅精神。', desc: '極具標誌性的香港常用品，以紅、白、藍三色尼龍帆布製成，堅韌耐用，常用於搬屋或探親。', imgUrl: './images/紅白藍膠袋.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '✈️', text: '行李寄艙'}, {emoji: '🏠', text: '搬屋必備'}] },
+            { id: 'q42', name: '撥輪電話', category: '懷舊日用品', distractors: ['大哥大水壺', '傳呼機', '打字機'], hint: '以前打電話要將手指插進圓孔裡，順時針轉到底再放手。', desc: '舊式轉盤電話，每次撥號都會發出清脆的「滴滴滴」齒輪轉動聲，是耐心的考驗。', imgUrl: './images/撥輪電話.png', cluePoint: {x: 0.5, y: 0.6}, related: [{emoji: '☎️', text: '滴滴轉盤聲'}, {emoji: '📖', text: '黃頁電話簿'}] },
+            { id: 'q43', name: '紅膠豬仔錢罌', category: '懷舊日用品', distractors: ['招財貓', '保險箱', '鐵罐'], hint: '紅色的塑膠小豬，背部有投幣口，儲滿了要剪開拿錢。', desc: '傳統紅膠豬仔錢罌，印有金色的花紋，是以前長輩教小朋友儲蓄的最佳工具，滿了就要「開肚」。', imgUrl: './images/紅膠豬仔錢罌.png', cluePoint: {x: 0.5, y: 0.4}, related: [{emoji: '🪙', text: '儲蓄五毫子'}, {emoji: '✂️', text: '剪刀開肚'}] },
+            { id: 'q44', name: '雞毛掃', category: '懷舊日用品', distractors: ['掃把', '拖把', '拍塵拍'], hint: '藤條柄綁著很多長長的羽毛，可以用來打掃，也是以前阿媽的「武器」。', desc: '傳統清潔工具，除了用來撢走家具灰塵，那根柔韌的藤條柄更是無數香港人童年的「痛楚回憶」。', imgUrl: './images/雞毛掃.png', cluePoint: {x: 0.5, y: 0.3}, related: [{emoji: '🧹', text: '撢走灰塵'}, {emoji: '💥', text: '阿媽藤條'}] },
+            { id: 'q45', name: '萬金油', category: '懷舊日用品', distractors: ['白花油', '紅花油', '活絡油'], hint: '六角形的小玻璃樽，紅色鐵蓋上印著一隻躍動的老虎。', desc: '居家必備良藥，清涼的藥膏專治蚊叮蟲咬、頭暈頭痛，六角形玻璃小樽是其經典標誌。', imgUrl: './images/萬金油.png', cluePoint: {x: 0.5, y: 0.5}, related: [{emoji: '🐯', text: '躍動金虎'}, {emoji: '🤕', text: '蚊叮頭暈'}] },
+            { id: 'q46', name: '花露水', category: '懷舊日用品', distractors: ['白花油', '驅蚊水', '香水'], hint: '一種傳統香水，長輩常用來消暑、驅蚊或去除異味。', desc: '經典的復古玻璃樽裝花露水，香氣獨特，是昔日家家戶戶必備的消暑防蚊聖品。', imgUrl: './images/花露水.png', cluePoint: {x: 0.5, y: 0.6}, related: [{emoji: '🦟', text: '消暑防蚊'}, {emoji: '🌸', text: '經典香氣'}] },
+
+            // 🎤 懷舊人物 (4 題)
+            { id: 'q47', name: '梅艷芳', category: '懷舊人物', distractors: ['陳慧嫻', '葉蒨文', '王菲'], hint: '香港樂壇「百變天后」，經典造型有超大復古墨鏡與紅唇。', desc: '香港傳奇巨星、樂壇天后，舞台風格百變，歌藝震撼人心，被譽為「香港的女兒」。', imgUrl: './images/梅艷芳.png', cluePoint: {x: 0.43, y: 0.35}, related: [{emoji: '👗', text: '舞台百變'}, {emoji: '🎵', text: '《壞女孩》'}] },
+            { id: 'q48', name: '張學友', category: '懷舊人物', distractors: ['劉德華', '黎明', '郭富城'], hint: '香港「歌神」，四大天王之一，唱歌時非常深情投入。', desc: '香港樂壇華語歌神，以深情動人的歌聲與強大的演唱會感染力風靡全球華人。', imgUrl: './images/張學友.png', cluePoint: {x: 0.5, y: 0.35}, related: [{emoji: '🎤', text: '樂壇歌神'}, {emoji: '🎵', text: '《吻別》'}] },
+            { id: 'q49', name: '李小龍', category: '懷舊人物', distractors: ['成龍', '甄子丹', '李連杰'], hint: '香港一代武打巨星，最經典造型是穿著黃色黑條紋的連身戰衣。', desc: '截拳道創始人，以招牌的黃色戰衣與雙節棍風靡全球，是將中國功夫推向世界的傳奇。', imgUrl: './images/李小龍.png', cluePoint: {x: 0.5, y: 0.6}, related: [{emoji: '🥋', text: '截拳道'}, {emoji: '🎞️', text: '經典武打電影'}] },
+            { id: 'q50', name: '沈殿霞', category: '懷舊人物', distractors: ['鄭裕玲', '薛家燕', '汪明荃'], hint: '香港著名的開心果，標誌性造型是極具特色的貓頭鷹髮型和黑框眼鏡。', desc: '被譽為「開心果」的香港傳奇主持及喜劇演員，其宏亮的笑聲和經典貓頭鷹造型深入民心。', imgUrl: './images/沈殿霞.png', cluePoint: {x: 0.5, y: 0.35}, related: [{emoji: '🦉', text: '貓頭鷹髮型'}, {emoji: '📺', text: '歡樂今宵'}] }
         ];
+
+        // Attach draw functions generated from URLs
+        QUESTIONS_DATABASE.forEach(q => {
+            if(q.imgUrl) {
+                q.draw = createDrawClosure(q.imgUrl);
+            }
+        });
 
         let audioCtx = null;
         function getAudioContext() {
@@ -320,9 +600,14 @@
         function playSound(type) {
             if (!gameState.soundEnabled) return;
             try {
-                const ctx = getAudioContext(); if (!ctx) return;
-                const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                osc.connect(gain); gain.connect(ctx.destination); const now = ctx.currentTime;
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                const now = ctx.currentTime;
+
                 if (type === 'click') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
                     gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
@@ -343,109 +628,141 @@
             } catch (e) {}
         }
 
-        function initLoupeEvents() {
-            const canvas = document.getElementById('clue-1');
-            if (!canvas || interactiveLoupe.eventsInitialized) return;
-            const updatePos = (e) => {
-                const rect = canvas.getBoundingClientRect();
-                let clientX = (e.touches && e.touches.length > 0) ? e.touches[0].clientX : e.clientX;
-                let clientY = (e.touches && e.touches.length > 0) ? e.touches[0].clientY : e.clientY;
-                interactiveLoupe.x = Math.max(0, Math.min(interactiveLoupe.displayW, clientX - rect.left));
-                interactiveLoupe.y = Math.max(0, Math.min(interactiveLoupe.displayH, clientY - rect.top));
-                renderLoupe();
-            };
-            canvas.addEventListener('mousedown', (e) => { interactiveLoupe.isDragging = true; updatePos(e); });
-            canvas.addEventListener('mousemove', (e) => { if (interactiveLoupe.isDragging) updatePos(e); });
-            window.addEventListener('mouseup', () => { interactiveLoupe.isDragging = false; });
-            canvas.addEventListener('touchstart', (e) => { interactiveLoupe.isDragging = true; updatePos(e); }, {passive: false});
-            canvas.addEventListener('touchmove', (e) => { if (interactiveLoupe.isDragging) { e.preventDefault(); updatePos(e); } }, {passive: false});
-            window.addEventListener('touchend', () => { interactiveLoupe.isDragging = false; });
-            interactiveLoupe.eventsInitialized = true;
-        }
-
-        function renderLoupe() {
-            const canvas = document.getElementById('clue-1');
-            if (!canvas || !interactiveLoupe.offscreen) return;
-            const ctx = canvas.getContext('2d');
-            const w = interactiveLoupe.displayW, h = interactiveLoupe.displayH;
-            ctx.clearRect(0, 0, w, h);
-            ctx.drawImage(interactiveLoupe.offscreen, 0, 0, interactiveLoupe.offscreen.width, interactiveLoupe.offscreen.height, 0, 0, w, h);
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'; ctx.fillRect(0, 0, w, h);
-            ctx.save();
-            ctx.beginPath(); ctx.arc(interactiveLoupe.x, interactiveLoupe.y, interactiveLoupe.radius, 0, Math.PI * 2); ctx.clip();
-            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
-            ctx.translate(interactiveLoupe.x, interactiveLoupe.y); ctx.scale(interactiveLoupe.zoom, interactiveLoupe.zoom); ctx.translate(-interactiveLoupe.x, -interactiveLoupe.y);
-            ctx.drawImage(interactiveLoupe.offscreen, 0, 0, interactiveLoupe.offscreen.width, interactiveLoupe.offscreen.height, 0, 0, w, h);
-            ctx.restore();
-            ctx.beginPath(); ctx.arc(interactiveLoupe.x, interactiveLoupe.y, interactiveLoupe.radius, 0, Math.PI * 2); ctx.lineWidth = 6; ctx.strokeStyle = '#d97706'; ctx.stroke();
-            ctx.beginPath(); ctx.arc(interactiveLoupe.x, interactiveLoupe.y, interactiveLoupe.radius - 3, 0, Math.PI * 2); ctx.lineWidth = 2; ctx.strokeStyle = '#fcd34d'; ctx.stroke();
-            ctx.beginPath(); ctx.arc(interactiveLoupe.x - interactiveLoupe.radius*0.3, interactiveLoupe.y - interactiveLoupe.radius*0.3, interactiveLoupe.radius*0.4, 0, Math.PI * 2);
-            const grad = ctx.createRadialGradient(interactiveLoupe.x - interactiveLoupe.radius*0.3, interactiveLoupe.y - interactiveLoupe.radius*0.3, 0, interactiveLoupe.x - interactiveLoupe.radius*0.3, interactiveLoupe.y - interactiveLoupe.radius*0.3, interactiveLoupe.radius*0.4);
-            grad.addColorStop(0, 'rgba(255,255,255,0.4)'); grad.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.fillStyle = grad; ctx.fill();
-        }
-
         function showScreen(screenId) {
             gameState.currentScreen = screenId;
             ['menu', 'game', 'reveal', 'result', 'museum'].forEach(s => {
                 const el = document.getElementById(`screen-${s}`);
-                if (el) { el.classList.toggle('hidden', s !== screenId); el.classList.toggle('flex', s === screenId); }
+                if (el) {
+                    el.classList.toggle('hidden', s !== screenId);
+                    el.classList.toggle('flex', s === screenId);
+                }
             });
-            const museumBtn = document.getElementById('btn-museum-top'), backBtn = document.getElementById('btn-back-menu'), headerScore = document.getElementById('header-score');
+            
+            const museumBtn = document.getElementById('btn-museum-top');
+            const backBtn = document.getElementById('btn-back-menu');
+            const headerScore = document.getElementById('header-score');
+
             if (headerScore) {
-                if (screenId === 'menu' || screenId === 'museum') { headerScore.classList.add('hidden'); headerScore.classList.remove('flex'); }
-                else { headerScore.classList.remove('hidden'); headerScore.classList.add('flex'); }
+                if (screenId === 'menu' || screenId === 'museum') {
+                    headerScore.classList.add('hidden');
+                    headerScore.classList.remove('flex');
+                } else {
+                    headerScore.classList.remove('hidden');
+                    headerScore.classList.add('flex');
+                }
             }
+
             if (museumBtn && backBtn) {
-                if (screenId === 'menu') { museumBtn.classList.remove('hidden'); museumBtn.classList.add('flex'); backBtn.classList.add('hidden'); backBtn.classList.remove('flex'); }
-                else if (screenId === 'game' || screenId === 'reveal') { museumBtn.classList.add('hidden'); museumBtn.classList.remove('flex'); backBtn.classList.remove('hidden'); backBtn.classList.add('flex'); }
-                else { museumBtn.classList.add('hidden'); museumBtn.classList.remove('flex'); backBtn.classList.add('hidden'); backBtn.classList.remove('flex'); }
+                if (screenId === 'menu') {
+                    museumBtn.classList.remove('hidden'); museumBtn.classList.add('flex');
+                    backBtn.classList.add('hidden'); backBtn.classList.remove('flex');
+                } else if (screenId === 'game' || screenId === 'reveal') {
+                    museumBtn.classList.add('hidden'); museumBtn.classList.remove('flex');
+                    backBtn.classList.remove('hidden'); backBtn.classList.add('flex');
+                } else {
+                    museumBtn.classList.add('hidden'); museumBtn.classList.remove('flex');
+                    backBtn.classList.add('hidden'); backBtn.classList.remove('flex');
+                }
             }
-            if (screenId === 'museum') populateMuseum();
+
+            // Special logic for Museum back button
+            if (screenId === 'museum') {
+                const btnBackResult = document.getElementById('btn-back-result');
+                // Only show "Back to Result" if we just finished a game
+                if (gameState.questionIndex >= 20) {
+                    btnBackResult.classList.remove('hidden');
+                    btnBackResult.classList.add('flex');
+                } else {
+                    btnBackResult.classList.add('hidden');
+                    btnBackResult.classList.remove('flex');
+                }
+                populateMuseum();
+            }
+            
             playSound('click');
         }
 
-        function startGame() {
-            gameState.score = 0; gameState.streak = 0; gameState.maxStreak = 0; gameState.correctCount = 0; gameState.questionIndex = 0;
-            gameState.hintsLeft = 3; gameState.fiftyFiftyLeft = 3; gameState.secondCluesLeft = 3;
+        async function startGame(mode) {
+            gameState.mode = mode;
+            gameState.score = 0;
+            gameState.streak = 0;
+            gameState.maxStreak = 0;
+            gameState.correctCount = 0;
+            gameState.questionIndex = 0;
+            gameState.hintsLeft = 3;
+            gameState.fiftyFiftyLeft = 3;
+            gameState.secondCluesLeft = 3;
+            
+            // Randomly select 20 questions
             gameState.questionsList = [...QUESTIONS_DATABASE].sort(() => Math.random() - 0.5).slice(0, 20);
             document.getElementById('score-display').innerText = '0';
-            showScreen('game'); loadQuestion();
+            
+            showScreen('game');
+            
+            // Immediately start preloading the first few images
+            preloadUpcomingImages();
+            
+            loadQuestion();
         }
 
         function loadQuestion() {
-            if (gameState.questionIndex >= gameState.questionsList.length) return endGame();
+            if (gameState.questionIndex >= gameState.questionsList.length) {
+                endGame();
+                return;
+            }
+
+            // Ensure preloader stays ahead
+            preloadUpcomingImages();
+
             const q = gameState.questionsList[gameState.questionIndex];
-            gameState.currentQuestion = q; gameState.hintUsed = false; gameState.fiftyFiftyUsed = false; gameState.secondClueUsed = false;
-            
-            const clue3Container = document.getElementById('clue-3-container'), clue3Locked = document.getElementById('clue-3-locked');
-            if (clue3Container && clue3Locked) { clue3Container.classList.add('hidden'); clue3Locked.classList.remove('hidden'); }
-            
+            gameState.currentQuestion = q;
+            gameState.hintUsed = false;
+            gameState.fiftyFiftyUsed = false;
+            gameState.secondClueUsed = false;
+
+            const clue3Container = document.getElementById('clue-3-container');
+            const clue3Locked = document.getElementById('clue-3-locked');
+            if (clue3Container && clue3Locked) {
+                clue3Container.classList.add('hidden');
+                clue3Locked.classList.remove('hidden');
+            }
+
             document.getElementById('question-number-badge').innerText = `第 ${gameState.questionIndex + 1} 題`;
             document.getElementById('category-badge').innerText = q.category;
             document.getElementById('hint-banner').classList.add('hidden');
-            renderOptions(q); updateToolButtonsUI();
-            setTimeout(() => setupCanvases(q), 50);
+
+            renderOptions(q);
+            updateToolButtonsUI();
+            
+            setupCanvases(q);
         }
 
         function renderOptions(q) {
-            const grid = document.getElementById('options-grid'); grid.innerHTML = '';
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
             const options = [q.name, ...q.distractors].sort(() => Math.random() - 0.5);
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = "retro-btn py-3 sm:py-4 md:py-5 px-2 md:px-4 rounded-xl md:rounded-2xl text-base sm:text-lg md:text-2xl font-black text-center flex items-center justify-center shadow-md md:shadow-lg truncate tracking-wide leading-tight transition-transform hover:scale-[1.01] active:scale-95";
-                btn.innerText = opt; btn.onclick = () => checkAnswer(opt, q);
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, q);
                 grid.appendChild(btn);
             });
         }
 
         function updateToolButtonsUI() {
             const updateBtn = (btnId, spanId, left, used) => {
-                const btn = document.getElementById(btnId), span = document.getElementById(spanId);
+                const btn = document.getElementById(btnId);
+                const span = document.getElementById(spanId);
                 if (btn && span) {
                     span.innerText = left;
-                    if (left <= 0 || used) { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed', 'saturate-0'); }
-                    else { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed', 'saturate-0'); }
+                    if (left <= 0 || used) {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50', 'cursor-not-allowed', 'saturate-0');
+                    } else {
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed', 'saturate-0');
+                    }
                 }
             };
             updateBtn('btn-hint', 'hint-left', gameState.hintsLeft, gameState.hintUsed);
@@ -455,96 +772,271 @@
 
         function useFiftyFifty() {
             if (gameState.fiftyFiftyUsed || gameState.fiftyFiftyLeft <= 0 || !gameState.currentQuestion) return;
-            gameState.fiftyFiftyUsed = true; gameState.fiftyFiftyLeft--;
-            const buttons = Array.from(document.getElementById('options-grid').querySelectorAll('button'));
-            const distractors = buttons.filter(btn => btn.innerText !== gameState.currentQuestion.name).sort(() => Math.random() - 0.5);
-            distractors[0].style.visibility = 'hidden'; distractors[1].style.visibility = 'hidden';
-            updateToolButtonsUI(); playSound('click');
+            gameState.fiftyFiftyUsed = true;
+            gameState.fiftyFiftyLeft--;
+            const q = gameState.currentQuestion;
+            const grid = document.getElementById('options-grid');
+            const buttons = Array.from(grid.querySelectorAll('button'));
+            const distractors = buttons.filter(btn => btn.innerText !== q.name);
+            distractors.sort(() => Math.random() - 0.5);
+            distractors[0].style.visibility = 'hidden';
+            distractors[1].style.visibility = 'hidden';
+            updateToolButtonsUI();
+            playSound('click');
         }
 
         function useSecondClue() {
             if (gameState.secondClueUsed || gameState.secondCluesLeft <= 0 || !gameState.currentQuestion) return;
-            gameState.secondClueUsed = true; gameState.secondCluesLeft--;
+            gameState.secondClueUsed = true;
+            gameState.secondCluesLeft--;
             document.getElementById('clue-3-locked').classList.add('hidden');
-            const c3Container = document.getElementById('clue-3-container'); c3Container.classList.remove('hidden');
-            const c3Canvas = document.getElementById('clue-3');
-            if (c3Canvas) {
-                const s = c3Container.clientWidth || 160; c3Canvas.width = s; c3Canvas.height = s;
-                if (gameState.currentQuestion.related[1]) drawContextCard(c3Canvas.getContext('2d'), s, s, gameState.currentQuestion.related[1]);
+            const clue3Container = document.getElementById('clue-3-container');
+            clue3Container.classList.remove('hidden');
+            const clue3Canvas = document.getElementById('clue-3');
+            if (clue3Canvas) {
+                const displaySize = clue3Container.clientWidth || 160;
+                clue3Canvas.width = displaySize;
+                clue3Canvas.height = displaySize;
+                const ctx3 = clue3Canvas.getContext('2d');
+                const data2 = gameState.currentQuestion.related[1];
+                if (data2) drawContextCard(ctx3, displaySize, displaySize, data2);
             }
-            updateToolButtonsUI(); playSound('click');
+            updateToolButtonsUI();
+            playSound('click');
         }
 
         function useHint() {
             if (gameState.hintUsed || gameState.hintsLeft <= 0 || !gameState.currentQuestion) return;
-            gameState.hintUsed = true; gameState.hintsLeft--;
+            gameState.hintUsed = true;
+            gameState.hintsLeft--;
             document.getElementById('hint-text').innerText = gameState.currentQuestion.hint;
             document.getElementById('hint-banner').classList.remove('hidden');
-            updateToolButtonsUI(); playSound('click');
+            updateToolButtonsUI();
+            playSound('click');
         }
 
         function checkAnswer(selectedOption, question) {
             const isCorrect = (selectedOption === question.name);
             if (isCorrect) {
-                playSound('correct'); gameState.correctCount++; gameState.streak++; gameState.maxStreak = Math.max(gameState.maxStreak, gameState.streak);
-                const addedPoints = 100 + (gameState.streak > 1 ? (gameState.streak - 1) * 20 : 0); gameState.score += addedPoints;
-                document.getElementById('reveal-status-tag').className = "bg-green-600 text-white font-black-shadow px-6 py-2 rounded-full text-xl sm:text-3xl shadow-lg";
+                playSound('correct');
+                gameState.correctCount++;
+                gameState.streak++;
+                gameState.maxStreak = Math.max(gameState.maxStreak, gameState.streak);
+                const addedPoints = 100 + (gameState.streak > 1 ? (gameState.streak - 1) * 20 : 0);
+                gameState.score += addedPoints;
+                
+                document.getElementById('reveal-status-tag').className = "bg-green-600 text-white font-black-shadow px-6 py-2 rounded-full text-xl sm:text-3xl shadow-lg border-4 border-green-400";
                 document.getElementById('reveal-status-tag').innerText = "答對了！";
                 document.getElementById('reveal-points-tag').innerText = `+${addedPoints} 分`;
             } else {
-                playSound('wrong'); gameState.streak = 0;
-                document.getElementById('reveal-status-tag').className = "bg-red-600 text-white font-black-shadow px-6 py-2 rounded-full text-xl sm:text-3xl shadow-lg";
+                playSound('wrong');
+                gameState.streak = 0;
+                document.getElementById('reveal-status-tag').className = "bg-red-600 text-white font-black-shadow px-6 py-2 rounded-full text-xl sm:text-3xl shadow-lg border-4 border-red-400";
                 document.getElementById('reveal-status-tag').innerText = `答錯了！答案是「${question.name}」`;
                 document.getElementById('reveal-points-tag').innerText = `+0 分`;
             }
+
             document.getElementById('score-display').innerText = gameState.score;
             document.getElementById('reveal-item-title').innerText = question.name;
             document.getElementById('reveal-item-desc').innerText = question.desc;
-            
-            const rCanvas = document.getElementById('reveal-canvas');
-            if (rCanvas) {
-                rCanvas.width = rCanvas.parentElement.clientWidth || 600; rCanvas.height = rCanvas.parentElement.clientHeight || 300;
-                question.draw(rCanvas.getContext('2d'), rCanvas.width, rCanvas.height);
+
+            const revealCanvas = document.getElementById('reveal-canvas');
+            if (revealCanvas) {
+                const rect = revealCanvas.parentElement.getBoundingClientRect();
+                revealCanvas.width = rect.width || 600;
+                revealCanvas.height = rect.height || 300;
+                const ctx = revealCanvas.getContext('2d');
+                if(question.draw) question.draw(ctx, revealCanvas.width, revealCanvas.height);
             }
             showScreen('reveal');
         }
 
-        function nextQuestion() { gameState.questionIndex++; showScreen('game'); loadQuestion(); }
+        function nextQuestion() {
+            gameState.questionIndex++;
+            showScreen('game');
+            loadQuestion();
+        }
 
         function endGame() {
             playSound('win');
             document.getElementById('final-score').innerText = gameState.score;
-            let rank = '🌱 懷舊新手', rankDesc = '再接再厲！多去懷舊展覽館看看，重溫美好童年時光！';
+            document.getElementById('stat-correct').innerText = `${gameState.correctCount}/${gameState.questionsList.length}`;
+            document.getElementById('stat-streak').innerText = `${gameState.maxStreak} 回`;
+
+            let rank = '🌱 懷舊新手';
+            let rankDesc = '再接再厲！多去懷舊展覽館看看，重溫美好童年時光！';
             if (gameState.score >= 2000) { rank = '🏆 懷舊宗師'; rankDesc = '神乎其技！你對往昔事物的記憶無人能及！'; }
             else if (gameState.score >= 1000) { rank = '🌟 記憶達人'; rankDesc = '非常厲害！大部分經典童年回憶都難不倒你！'; }
-            document.getElementById('rank-title').innerText = rank; document.getElementById('rank-desc').innerText = rankDesc;
+
+            document.getElementById('rank-title').innerText = rank;
+            document.getElementById('rank-desc').innerText = rankDesc;
             showScreen('result');
         }
 
+        function initLoupeEvents() {
+            const canvas = document.getElementById('clue-1');
+            if (!canvas || interactiveLoupe.eventsInitialized) return;
+
+            const updatePos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                let clientX, clientY;
+                if (e.touches && e.touches.length > 0) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                interactiveLoupe.x = clientX - rect.left;
+                interactiveLoupe.y = clientY - rect.top;
+                
+                interactiveLoupe.x = Math.max(0, Math.min(interactiveLoupe.displayW, interactiveLoupe.x));
+                interactiveLoupe.y = Math.max(0, Math.min(interactiveLoupe.displayH, interactiveLoupe.y));
+                
+                renderLoupe();
+            };
+
+            canvas.addEventListener('mousedown', (e) => { interactiveLoupe.isDragging = true; updatePos(e); });
+            canvas.addEventListener('mousemove', (e) => { if (interactiveLoupe.isDragging) updatePos(e); });
+            window.addEventListener('mouseup', () => { interactiveLoupe.isDragging = false; });
+            
+            canvas.addEventListener('touchstart', (e) => { interactiveLoupe.isDragging = true; updatePos(e); }, {passive: false});
+            canvas.addEventListener('touchmove', (e) => { 
+                if (interactiveLoupe.isDragging) {
+                    e.preventDefault(); 
+                    updatePos(e);
+                }
+            }, {passive: false});
+            window.addEventListener('touchend', () => { interactiveLoupe.isDragging = false; });
+
+            interactiveLoupe.eventsInitialized = true;
+        }
+
+        function renderLoupe() {
+            const canvas = document.getElementById('clue-1');
+            if (!canvas || !interactiveLoupe.offscreen || !interactiveLoupe.imgElement) return;
+            const ctx = canvas.getContext('2d');
+            const w = interactiveLoupe.displayW;
+            const h = interactiveLoupe.displayH;
+            
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Background Image (Dimmed)
+            ctx.drawImage(interactiveLoupe.offscreen, 0, 0, w, h);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+            ctx.fillRect(0, 0, w, h);
+
+            // Loupe Clipping
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(interactiveLoupe.x, interactiveLoupe.y, interactiveLoupe.radius, 0, Math.PI * 2);
+            ctx.clip();
+
+            ctx.fillStyle = '#000'; 
+            ctx.fillRect(0, 0, w, h);
+
+            // Zoom transformation
+            ctx.translate(interactiveLoupe.x, interactiveLoupe.y);
+            ctx.scale(interactiveLoupe.zoom, interactiveLoupe.zoom);
+            ctx.translate(-interactiveLoupe.x, -interactiveLoupe.y);
+            
+            // Re-draw original crisp image inside loupe
+            ctx.drawImage(interactiveLoupe.offscreen, 0, 0, w, h);
+            ctx.restore();
+
+            // Loupe Frame
+            ctx.beginPath();
+            ctx.arc(interactiveLoupe.x, interactiveLoupe.y, interactiveLoupe.radius, 0, Math.PI * 2);
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = '#d97706'; 
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(interactiveLoupe.x, interactiveLoupe.y, interactiveLoupe.radius - 3, 0, Math.PI * 2);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#fcd34d'; 
+            ctx.stroke();
+
+            // Loupe Glass Glare
+            ctx.beginPath();
+            ctx.arc(interactiveLoupe.x - interactiveLoupe.radius*0.3, interactiveLoupe.y - interactiveLoupe.radius*0.3, interactiveLoupe.radius*0.4, 0, Math.PI * 2);
+            const grad = ctx.createRadialGradient(
+                interactiveLoupe.x - interactiveLoupe.radius*0.3, interactiveLoupe.y - interactiveLoupe.radius*0.3, 0,
+                interactiveLoupe.x - interactiveLoupe.radius*0.3, interactiveLoupe.y - interactiveLoupe.radius*0.3, interactiveLoupe.radius*0.4
+            );
+            grad.addColorStop(0, 'rgba(255,255,255,0.4)');
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+        }
+
         function setupCanvases(question) {
-            const c1Canvas = document.getElementById(`clue-1`);
-            if (c1Canvas) {
-                const w = c1Canvas.parentElement.clientWidth || 300, h = c1Canvas.parentElement.clientHeight || 300;
-                c1Canvas.width = w; c1Canvas.height = h;
-                const off = document.createElement('canvas'); off.width = 1000; off.height = Math.floor(1000 * (h / w));
-                question.draw(off.getContext('2d'), off.width, off.height);
-                interactiveLoupe.offscreen = off; interactiveLoupe.displayW = w; interactiveLoupe.displayH = h;
-                interactiveLoupe.x = (question.cluePoint||{x:0.5,y:0.5}).x * w; interactiveLoupe.y = (question.cluePoint||{x:0.5,y:0.5}).y * h;
-                initLoupeEvents(); renderLoupe();
+            const clue1Canvas = document.getElementById(`clue-1`);
+            const indicator = document.getElementById('image-loading-indicator');
+            
+            if (clue1Canvas) {
+                // Show loading spinner
+                if (indicator) indicator.classList.remove('hidden');
+                
+                const parent = clue1Canvas.parentElement;
+                const displayW = parent.clientWidth || 300;
+                const displayH = parent.clientHeight || 300;
+                clue1Canvas.width = displayW;
+                clue1Canvas.height = displayH;
+                
+                const offscreen = document.createElement('canvas');
+                offscreen.width = displayW; 
+                offscreen.height = displayH; 
+                const offCtx = offscreen.getContext('2d');
+
+                // Draw image from cache or load it
+                if(question.draw) {
+                    question.draw(offCtx, displayW, displayH, (success, img) => {
+                        // Hide loading spinner when drawing is complete (success or fail)
+                        if (indicator) indicator.classList.add('hidden');
+                        
+                        if(success && img) {
+                            interactiveLoupe.offscreen = offscreen;
+                            interactiveLoupe.imgElement = img; // Store for high-res zoom
+                            interactiveLoupe.displayW = displayW;
+                            interactiveLoupe.displayH = displayH;
+                            
+                            const pt = question.cluePoint || {x: 0.5, y: 0.5};
+                            interactiveLoupe.x = pt.x * displayW;
+                            interactiveLoupe.y = pt.y * displayH;
+
+                            initLoupeEvents();
+                            renderLoupe();
+                        }
+                    });
+                } else {
+                     if (indicator) indicator.classList.add('hidden');
+                }
             }
-            const c2Canvas = document.getElementById(`clue-2`);
-            if (c2Canvas) {
-                const s = Math.floor(Math.min(c2Canvas.parentElement.clientWidth, c2Canvas.parentElement.clientHeight)) || 100;
-                c2Canvas.width = s; c2Canvas.height = s;
-                if (question.related[0]) drawContextCard(c2Canvas.getContext('2d'), s, s, question.related[0]);
+
+            // Setup Clue 2
+            const clueCanvas = document.getElementById(`clue-2`);
+            if (clueCanvas) {
+                const parent = clueCanvas.parentElement;
+                const displaySize = Math.floor(Math.min(parent.clientWidth, parent.clientHeight)) || 100;
+                clueCanvas.width = displaySize;
+                clueCanvas.height = displaySize;
+                const ctx = clueCanvas.getContext('2d');
+                const data = question.related[0];
+                if (data) drawContextCard(ctx, displaySize, displaySize, data);
             }
-            const c3Container = document.getElementById('clue-3-container');
-            if (c3Container && !c3Container.classList.contains('hidden')) {
-                const c3Canvas = document.getElementById(`clue-3`);
-                if (c3Canvas) {
-                    const s = Math.floor(Math.min(c3Container.clientWidth, c3Container.clientHeight)) || 100;
-                    c3Canvas.width = s; c3Canvas.height = s;
-                    if (question.related[1]) drawContextCard(c3Canvas.getContext('2d'), s, s, question.related[1]);
+
+            // Setup Clue 3
+            const clue3Container = document.getElementById('clue-3-container');
+            if (clue3Container && !clue3Container.classList.contains('hidden')) {
+                const clue3Canvas = document.getElementById(`clue-3`);
+                if (clue3Canvas) {
+                    const displaySize = Math.floor(Math.min(clue3Container.clientWidth, clue3Container.clientHeight)) || 100;
+                    clue3Canvas.width = displaySize;
+                    clue3Canvas.height = displaySize;
+                    const ctx3 = clue3Canvas.getContext('2d');
+                    const data2 = question.related[1];
+                    if (data2) drawContextCard(ctx3, displaySize, displaySize, data2);
                 }
             }
         }
@@ -555,44 +1047,92 @@
             const grad = ctx.createRadialGradient(w/2, h/2, w*0.2, w/2, h/2, w*0.8);
             grad.addColorStop(0, 'transparent'); grad.addColorStop(1, 'rgba(0,0,0,0.15)');
             ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `${Math.floor(w * 0.45)}px sans-serif`;
+
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            const emojiSize = Math.floor(w * 0.45);
+            ctx.font = `${emojiSize}px sans-serif`;
             ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
-            ctx.fillText(data.emoji, w/2, h/2 - h*0.08); ctx.shadowColor = 'transparent';
-            const bannerH = h * 0.3; ctx.fillStyle = '#78350f'; ctx.fillRect(0, h - bannerH, w, bannerH);
-            ctx.fillStyle = '#fef3c7'; ctx.font = `900 ${Math.min(Math.floor(w * 0.12), 24)}px -apple-system, sans-serif`;
+            ctx.fillText(data.emoji, w/2, h/2 - h*0.08);
+            ctx.shadowColor = 'transparent';
+
+            const bannerH = h * 0.3;
+            ctx.fillStyle = '#78350f'; ctx.fillRect(0, h - bannerH, w, bannerH);
+            ctx.fillStyle = '#fef3c7';
+            const textSize = Math.min(Math.floor(w * 0.12), 24);
+            ctx.font = `900 ${textSize}px -apple-system, sans-serif`;
             ctx.fillText(data.text, w/2, h - (bannerH/2));
         }
 
         function populateMuseum() {
-            const grid = document.getElementById('museum-grid'); grid.innerHTML = '';
+            const grid = document.getElementById('museum-grid');
+            grid.innerHTML = '';
             QUESTIONS_DATABASE.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "bg-amber-950/90 border-4 border-amber-800 rounded-3xl p-5 md:p-6 flex flex-col justify-between shadow-xl";
-                
-                // 這裡更新了展覽館排版：標題置中且變大、移除小標籤
+                card.className = "bg-amber-950/90 border-4 border-amber-800 rounded-3xl p-4 md:p-6 flex flex-col justify-between shadow-xl cursor-pointer hover:bg-amber-900 transition-colors group";
+                // Added onclick to open detail overlay
+                card.onclick = () => openMuseumDetail(item);
+
+                // Removed category tag from top, centered the title
                 card.innerHTML = `
-                    <div>
+                    <div class="pointer-events-none">
                         <div class="mb-3">
-                            <h3 class="font-black text-amber-300 text-3xl md:text-4xl text-center w-full">${item.name}</h3>
+                            <h3 class="font-black text-amber-300 text-2xl md:text-3xl text-center w-full group-hover:text-amber-200 transition-colors">${item.name}</h3>
                         </div>
-                        <div class="w-full h-40 md:h-56 bg-black/60 rounded-2xl overflow-hidden my-4 md:my-5 relative border-[3px] border-amber-900 shadow-inner">
-                            <canvas id="museum-canvas-${item.id}" class="w-full h-full object-contain"></canvas>
+                        <div class="w-full h-32 md:h-48 bg-black/60 rounded-2xl overflow-hidden my-3 md:my-5 relative border-[3px] border-amber-900 shadow-inner flex items-center justify-center">
+                             <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-600 absolute"></i>
+                             <img src="${item.imgUrl}" alt="${item.name}" class="absolute inset-0 w-full h-full object-contain p-2 opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0'); this.previousElementSibling.remove();" onerror="this.previousElementSibling.className='fa-solid fa-triangle-exclamation text-3xl text-red-500 absolute';">
                         </div>
-                        <p class="text-base md:text-xl text-amber-100 font-bold leading-relaxed">${item.desc}</p>
+                        <p class="text-sm md:text-lg text-amber-100 font-bold leading-relaxed line-clamp-3 text-center opacity-80">${item.desc}</p>
                     </div>
                 `;
-                
                 grid.appendChild(card);
-                setTimeout(() => {
-                    const c = document.getElementById(`museum-canvas-${item.id}`);
-                    if (c) { c.width = c.parentElement.clientWidth || 250; c.height = c.parentElement.clientHeight || 150; item.draw(c.getContext('2d'), c.width, c.height); }
-                }, 50);
             });
+        }
+
+        function openMuseumDetail(item) {
+            playSound('click');
+            document.getElementById('detail-title').innerText = item.name;
+            document.getElementById('detail-category').innerText = item.category;
+            document.getElementById('detail-desc').innerText = item.desc;
+            
+            const imgEl = document.getElementById('detail-image');
+            const errEl = document.getElementById('detail-image-error');
+            const pathEl = document.getElementById('detail-error-path');
+            
+            imgEl.classList.add('hidden');
+            errEl.classList.add('hidden');
+            
+            imgEl.onload = () => {
+                imgEl.classList.remove('hidden');
+            };
+            imgEl.onerror = () => {
+                errEl.classList.remove('hidden');
+                errEl.classList.add('flex');
+                pathEl.innerText = item.imgUrl;
+            };
+            
+            imgEl.src = item.imgUrl;
+            
+            const overlay = document.getElementById('screen-museum-detail');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        function closeMuseumDetail() {
+            playSound('click');
+            const overlay = document.getElementById('screen-museum-detail');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
         }
 
         window.onload = () => {
             showScreen('menu');
-            window.addEventListener('resize', () => { if (gameState.currentScreen === 'game' && gameState.currentQuestion) setupCanvases(gameState.currentQuestion); });
+            // Preload a few initial images on menu load to be ready
+            preloadUpcomingImages();
+
+            window.addEventListener('resize', () => {
+                if (gameState.currentScreen === 'game' && gameState.currentQuestion) setupCanvases(gameState.currentQuestion);
+            });
         };
     </script>
 </body>
