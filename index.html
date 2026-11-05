@@ -742,10 +742,22 @@
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
             const options = [q.name, ...q.distractors].sort(() => Math.random() - 0.5);
-            options.forEach(opt => {
+            const letters = ['A', 'B', 'C', 'D'];
+            options.forEach((opt, i) => {
                 const btn = document.createElement('button');
-                btn.className = "retro-btn py-3 sm:py-4 md:py-5 px-2 md:px-4 rounded-xl md:rounded-2xl text-base sm:text-lg md:text-2xl font-black text-center flex items-center justify-center shadow-md md:shadow-lg truncate tracking-wide leading-tight transition-transform hover:scale-[1.01] active:scale-95";
-                btn.innerText = opt;
+                btn.className = "retro-btn py-3 sm:py-4 md:py-5 px-2 md:px-4 rounded-xl md:rounded-2xl text-base sm:text-lg md:text-2xl font-black text-center flex items-center justify-center gap-2 md:gap-3 shadow-md md:shadow-lg tracking-wide leading-tight transition-transform hover:scale-[1.01] active:scale-95";
+                btn.dataset.option = opt;
+
+                const badge = document.createElement('span');
+                badge.className = "shrink-0 w-7 h-7 sm:w-8 sm:h-8 md:w-11 md:h-11 rounded-full bg-amber-950 text-amber-200 border-2 border-amber-100 flex items-center justify-center text-sm sm:text-base md:text-2xl";
+                badge.style.textShadow = 'none';
+                badge.textContent = letters[i];
+
+                const label = document.createElement('span');
+                label.className = "truncate min-w-0";
+                label.textContent = opt;
+
+                btn.append(badge, label);
                 btn.onclick = () => checkAnswer(opt, q);
                 grid.appendChild(btn);
             });
@@ -778,7 +790,7 @@
             const q = gameState.currentQuestion;
             const grid = document.getElementById('options-grid');
             const buttons = Array.from(grid.querySelectorAll('button'));
-            const distractors = buttons.filter(btn => btn.innerText !== q.name);
+            const distractors = buttons.filter(btn => btn.dataset.option !== q.name);
             distractors.sort(() => Math.random() - 0.5);
             distractors[0].style.visibility = 'hidden';
             distractors[1].style.visibility = 'hidden';
